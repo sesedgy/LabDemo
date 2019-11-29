@@ -1,0 +1,86 @@
+.labs-page {
+    margin-top: 60px;
+    display: flex;
+    min-height: calc(100vh - 60px);
+    height: 100%;
+}
+
+.services_container {
+    width: calc(75% - 80px);
+    background-color: #182935;
+    margin: 40px 40px 20px 40px;
+}
+
+.services_container .row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 15px 0;
+}
+
+.services_container .row .service {
+    width: 120px;
+    height: 120px;
+    padding: 15px;
+    background-color: #213747;
+    margin: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 10px;
+}
+
+.services_container .row .service .image {
+    width: 70px;
+}
+
+.services_container .row .service .label {
+
+}
+
+.right-bar {
+    width: calc(25% - 15px);
+    background-color: #163142;
+    margin: 40px 15px 25px 0;
+    padding: 25px;
+}
+
+.right-bar .timer_container {
+
+}
+
+.right-bar .timer_container .timer {
+    font-size: 25px;
+    text-align: center;
+}
+
+.right-bar .timer_container .btn_container {
+
+}
+
+.right-bar .flag_container {
+
+}
+
+.right-bar .solutions_container {
+    margin-top: 25px;
+}
+
+.right-bar .solutions_container .user {
+    text-align: center;
+    font-size: 25px;
+}
+
+.right-bar .solutions_container .solutions-list {
+    margin-top: 20px;
+    font-size: 18px;
+
+}
+.right-bar .solutions_container .solutions-list .solution {
+    padding: 10px 10px;
+    cursor: pointer;
+    background-color: #182B38;
+    margin-bottom: 10px;
+}
