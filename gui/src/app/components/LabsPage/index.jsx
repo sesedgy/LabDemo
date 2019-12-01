@@ -7,7 +7,10 @@ import moment from 'moment';
 import Button from '@material-ui/core/Button';
 import Countdown from 'react-countdown-now';
 import TextField from '@material-ui/core/TextField';
-import { getPromise, postPromise } from '../../services/apiService';
+import {
+  createTry,
+  getFlags, getServices, getTries, getUserId, sendFlag,
+} from '../../services/apiService';
 import { API_PATHS, HOURS_FROM_LAST_LAB } from '../../../constants';
 import { cookiesNames, getCookie } from '../../services/authService';
 
@@ -32,90 +35,61 @@ const styles = {
 
 class LabsPage extends Component {
     allTries = [];
-    allFlags = [];
+
     allServices = [];
+
+    allFlags = [];
 
     state = {
       userId: null,
       tries: [],
-      services: [],
       flags: [],
       isOtherUserMode: false,
       flag: '',
     };
 
     componentDidMount() {
-      getPromise(API_PATHS.POST.GET_USERS, { token: getCookie(cookiesNames.token) }).then((response) => {
-        if (response.error) {
-          NotificationManager.error('Error', response.error);
-        } else {
-          const userId = response._id;
+      getUserId().then((userId) => {
+        Promise.all([getTries(),
+          getServices(),
+          getFlags(),
+        ]).then((results) => {
+          this.allTries = results[0];
+          this.allServices = results[1];
+          this.allFlags = results[2];
+
+          const tries = this.allTries.filter(item => item.userId === userId);
+          const lastTry = tries[tries.length - 1];
+          let flags = [];
+          if (lastTry) {
+            flags = this.allFlags.filter(flag => flag.tryId === lastTry._id);
+          }
+          this.allServices.forEach((service) => {
+            service.flags = this.allFlags
+              .filter(flag => flag.serviceId === service.id)
+              .forEach(flag => flag.userName = this.allTries.find(item => item._id === flag.tryId).userName);
+          });
 
 
           this.setState({
             userId,
+            flags,
+            tries,
           });
-        }
-      });
-
-      this.getTries();
-      getPromise(API_PATHS.GET.GET_SERVICES).then((response) => {
-        if (response.error) {
-          NotificationManager.error('Error', response.error);
-        } else {
-          this.setState({
-            services: response.data,
-          });
-        }
+        });
       });
     }
 
-    getTries = () => {
-      getPromise(API_PATHS.GET.GET_TRIES, { token: getCookie(cookiesNames.token) })
-        .then((response) => {
-          if (response.error) {
-            NotificationManager.error('Error', response.error);
-          } else {
-            this.allTries = response.data;
-          }
-        });
-    };
-
-    getFlagsByTryId = (tryId) => {
-      postPromise(API_PATHS.POST.GET_FLAGS, { tryId })
-        .then((response) => {
-          if (response.error) {
-            NotificationManager.error('Error', response.error);
-          } else {
-            this.setState({
-              flags: response.data,
-            });
-          }
-        });
-    };
-
     createTry = () => {
-      const tryName = moment().format('HH:mm DD.MM.YYYY');
-      postPromise(API_PATHS.POST.CREATE_TRY, { token: getCookie(cookiesNames.token), tryName })
-        .then((response) => {
-          if (response.error) {
-            NotificationManager.error('Error', response.error);
-          } else {
-            this.getTries();
-          }
-        });
+      createTry().then(() => {
+        getTries();
+      });
     };
 
     sendFlag = () => {
-      postPromise(API_PATHS.POST.CHECK_FLAG, { flagCode: this.state.flag })
-        .then((response) => {
-          if (response.error) {
-            NotificationManager.error('Error', response.error);
-          } else {
-            NotificationManager.success('Flag is correct', '');
-            this.setState({ flag: '' });
-          }
-        });
+      sendFlag(this.state.flag).then(() => {
+        this.setState({ flag: '' });
+      });
     };
 
     render() {

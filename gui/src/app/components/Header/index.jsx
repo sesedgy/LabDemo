@@ -16,6 +16,8 @@ import './styles.css';
 import { postPromise } from '../../services/apiService';
 import { API_PATHS } from '../../../constants';
 
+import LogoImg from '../../../images/logo.png';
+
 const styles = {
   grow: {
     flexGrow: 1,
@@ -71,6 +73,7 @@ class Header extends React.Component {
       return (
         <div className="header">
           <Toolbar>
+            <LogoImg />
             <Typography variant="h6" color="inherit" className={classes.grow}>Clean manager</Typography>
             {isLogin ? (
               <IconButton
