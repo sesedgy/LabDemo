@@ -81,6 +81,15 @@ class Header extends React.Component {
               <img className="image" src={LogoImg} onClick={() => window.location.reload()} />
             </div>
             {isLogin ? (
+                <>
+                                      <span
+                                          className="link login-link"
+                                          onClick={(event) => {
+                                              this.setState({ anchorEl: event.currentTarget, popupMode: 'logIn' });
+                                          }}
+                                      >
+                    My Statistic
+                  </span>
               <IconButton
                 onClick={(event) => {
                   this.setState({ anchorEl: event.currentTarget, popupMode: 'account' });
@@ -88,6 +97,7 @@ class Header extends React.Component {
               >
                 <AccountCircle className="icon" color="secondary" />
               </IconButton>
+              </>
             )
               : (
                 <div className="login_container">

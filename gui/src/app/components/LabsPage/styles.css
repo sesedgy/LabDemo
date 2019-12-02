@@ -42,6 +42,11 @@
     width: 100px;
     top: 4px;
 }
+.services_container .row .service .root-label {
+    position: absolute;
+    right: 0;
+    top: 0;
+}
 
 .services_container .row .service .label {
     margin-top: 12px;

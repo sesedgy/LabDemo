@@ -16,6 +16,7 @@ import RightArrow from '../../../images/right-arrow.svg';
 import Tooltip from '../Tooltip';
 
 import './styles.css';
+import RootLabel from '../RootLabel';
 
 
 const styles = {
@@ -45,7 +46,7 @@ class LabsPage extends Component {
       userId: null,
       tries: [],
       flags: [],
-      isOtherUserMode: false,
+      selectedUserId: null,
       flag: '',
       selectedSolutionId: null,
     };
@@ -65,15 +66,31 @@ class LabsPage extends Component {
           if (lastTry) {
             this.selectSolution(lastTry._id);
           }
-          this.allServices.forEach((service) => {
-            service.flags = this.allFlags
-              .filter(flag => flag.serviceId === service.id)
-              .forEach(flag => flag.userName = this.allTries.find(item => item._id === flag.tryId).userName);
-          });
+          this.allServices = this.allServices.map(service => ({
+            ...service,
+            flags: this.allFlags
+              .filter(flag => flag.serviceName === service.name)
+              .map((flag) => {
+                const item = this.allTries.find(item => item._id === flag.tryId);
+                let submitTime = moment(flag.submitTime);
+                const startTime = moment(item.startTime);
+                submitTime = submitTime.subtract(startTime.hour(), 'hours');
+                submitTime = submitTime.subtract(startTime.minute(), 'minutes');
+                submitTime = submitTime.subtract(startTime.second(), 'seconds');
+
+                return {
+                  ...flag,
+                  wasteTime: submitTime.format('HH:mm:ss'),
+                  userName: item.userName,
+                  userId: item.userId,
+                };
+              }),
+          }));
 
 
           this.setState({
             userId,
+            selectedUserId: userId,
             tries,
           });
         });
@@ -104,6 +121,27 @@ class LabsPage extends Component {
           if (lastTry) {
             this.selectSolution(lastTry._id);
           }
+          this.allServices = this.allServices.map(service => ({
+            ...service,
+            flags: this.allFlags
+              .filter(flag => flag.serviceName === service.name)
+              .map((flag) => {
+                const item = this.allTries.find(item => item._id === flag.tryId);
+                let submitTime = moment(flag.submitTime);
+                const startTime = moment(item.startTime);
+                submitTime = submitTime.subtract(startTime.hour(), 'hours');
+                submitTime = submitTime.subtract(startTime.minute(), 'minutes');
+                submitTime = submitTime.subtract(startTime.second(), 'seconds');
+
+                return {
+                  ...flag,
+                  wasteTime: submitTime.format('HH:mm:ss'),
+                  userName: item.userName,
+                  userId: item.userId,
+                };
+              }),
+          }));
+
           this.setState({
             flag: '',
           });
@@ -119,9 +157,23 @@ class LabsPage extends Component {
       });
     };
 
+    onUserClick = (userId) => {
+      const tries = this.allTries.filter(item => item.userId === userId);
+      const lastTry = tries[tries.length - 1];
+      if (lastTry) {
+        this.selectSolution(lastTry._id);
+      }
+
+      this.setState({
+        selectedUserId: userId,
+        tries,
+        flag: '',
+      });
+    };
+
     render() {
       const {
-        tries, flags, isOtherUserMode, flag, selectedSolutionId,
+        userId, tries, flags, selectedUserId, flag, selectedSolutionId,
       } = this.state;
       const { classes } = this.props;
 
@@ -132,7 +184,7 @@ class LabsPage extends Component {
       let now = moment();
       let finishTime = null;
       let finishTimeWithPause = null;
-      if (!isOtherUserMode) {
+      if (userId === selectedUserId) {
         if (tries.length > 0) {
           lastTry = tries[tries.length - 1];
           now = moment();
@@ -153,48 +205,49 @@ class LabsPage extends Component {
         }
       }
 
-      console.log('////////////////');
-      console.log(this.allFlags);
-      console.log(flags);
+      console.log(this.allServices);
       return (
         <div className="labs-page">
           <div className="services_container">
             <div className="row">
               {this.allServices.filter(service => service.level === 1).map(service => (
-                <Tooltip>
+                <Tooltip onUserClick={this.onUserClick} flagsList={service.flags} userId={userId}>
                   <div className="service">
-                    <img className="image" src={ComputerImg} />
-                    <img className="image-target" style={{ display: flags.filter(flag => flag.serviceName === service.name).length > 0 ? 'block' : 'none' }} src={TargetImg} />
+                    <img className="image" src={ComputerImg} alt="" />
+                    <img className="image-target" style={{ display: flags.filter(item => item.serviceName === service.name).length > 0 ? 'block' : 'none' }} src={TargetImg} alt="" />
                     <div className="label">{service.name}</div>
+                    {flags.some(item => item.serviceName === service.name && item.flagType === '1') && <RootLabel />}
                   </div>
                 </Tooltip>
               ))}
             </div>
             <div className="row">
               {this.allServices.filter(service => service.level === 2).map(service => (
-                <Tooltip>
+                <Tooltip onUserClick={this.onUserClick} flagsList={service.flags} userId={userId}>
                   <div className="service">
-                    <img className="image" src={ComputerImg} />
-                    <img className="image-target" style={{ display: flags.filter(flag => flag.serviceName === service.name).length > 0 ? 'block' : 'none' }} src={TargetImg} />
+                    <img className="image" src={ComputerImg} alt="" />
+                    <img className="image-target" style={{ display: flags.filter(item => item.serviceName === service.name).length > 0 ? 'block' : 'none' }} src={TargetImg} alt="" />
                     <div className="label">{service.name}</div>
+                    {flags.some(item => item.serviceName === service.name && item.flagType === '1') && <RootLabel />}
                   </div>
                 </Tooltip>
               ))}
             </div>
             <div className="row">
               {this.allServices.filter(service => service.level === 3).map(service => (
-                <Tooltip>
+                <Tooltip onUserClick={this.onUserClick} flagsList={service.flags} userId={userId}>
                   <div className="service">
-                    <img className="image" src={ComputerImg} />
-                    <img className="image-target" style={{ display: flags.filter(flag => flag.serviceName === service.name).length > 0 ? 'block' : 'none' }} src={TargetImg} />
+                    <img className="image" src={ComputerImg} alt="" />
+                    <img className="image-target" style={{ display: flags.filter(item => item.serviceName === service.name).length > 0 ? 'block' : 'none' }} src={TargetImg} alt="" />
                     <div className="label">{service.name}</div>
+                    {flags.some(item => item.serviceName === service.name && item.flagType === '1') && <RootLabel />}
                   </div>
                 </Tooltip>
               ))}
             </div>
           </div>
           <div className="right-bar">
-            {!isOtherUserMode
+            {selectedUserId === userId
               && (
               <>
                 <div className="timer_container">
@@ -245,7 +298,7 @@ class LabsPage extends Component {
               )}
             <div className="solutions_container">
               <div className="user">
-                {tries.length > 0 && <>{isOtherUserMode ? '' : 'Your solutions'}</>}
+                {tries.length > 0 && <>{selectedUserId === userId ? 'Your solutions' : ''}</>}
               </div>
               <div className="solutions-list">
                 {tries.map(item => (

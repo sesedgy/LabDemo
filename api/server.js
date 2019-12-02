@@ -205,6 +205,7 @@ app.get('/api/flags', (req, res) => {
                     tryId: flag.tryId,
                     serviceName: flag.serviceName,
                     flagType: flag.flagType,
+                    submitTime: flag.submitTime
                 }
             });
             return res.send(flags);
@@ -270,7 +271,6 @@ app.post('/api/tries/createTry', (req, res) => {
                         });
                         newTry.save((err, item) => {
                             saveLab(result.labId, item.id).then(() => {
-                                console.log(item);
                                 result.flags.forEach(flag => {
                                     let newFlag = new FlagModel({
                                         flagCode: flag.flag_code,
@@ -279,11 +279,8 @@ app.post('/api/tries/createTry', (req, res) => {
                                         tryId: item._id,
                                         serviceName: flag.serviceName,
                                     });
-                                    console.log("////////////////////")
-                                    console.log(newFlag)
                                     newFlag.save(() => {});
                                 });
-                                console.log('TUT')
                                 return res.send({status: 'OK'});
                             }).catch(() => {
                                 res.statusCode = 500;
@@ -317,134 +314,15 @@ app.post('/api/tries/createTry', (req, res) => {
 
 //Check flag
 app.post('/api/tries/checkFlag', (req, res) => {
-    FlagModel.findOne({ 'flagCode': req.body.flagCode }, (err, flag) => {
-        if (!err) {
-            if(flag){
-                FlagModel.update(
-                    {id: flag.id},
-                    {flagStatus: "solved", submitTime: new Date()},
-                    function (err) {
-                        if (!err){
-                            return res.send({status: 'OK'});
-                        }else{
-                            res.statusCode = 500;
-                            return res.send({ error: 'Server error' });
-                        }
-                    }
-                );
-            }else{
-                res.statusCode = 500;
-                return res.send({ error: 'Incorrect flag' });
-            }
-        } else {
+    FlagModel.findOneAndUpdate({ 'flagCode': req.body.flagCode }, {flagStatus: "solved", submitTime: new Date()}, (err) => {
+        if (!err){
+            return res.send({status: 'OK'});
+        }else{
             res.statusCode = 500;
-            return res.send({ error: 'Server error' });
+            return res.send({ error: 'Incorrect flag' });
         }
     });
 });
-
-// //Get tries
-// app.get('/api/tries', (req, res) => {
-//     getUser(req.body).then((userId) => {
-//         TryModel.find({ 'userId': userId }, function (err, tries) {
-//             if (!err) {
-//                 new Promise((resolve, reject) => {
-//                     getServices().then((result) => {
-//                         tries.forEach(item => {
-//                             FlagModel.find({ 'tryId': item.id }, function (err, flags) {
-//                                 console.log(item.id)
-//                                 if (!err) {
-//                                     flags.forEach(flag => {
-//                                         let service = result.find(service => service.id === flag.serviceId);
-//                                         delete flag.serviceId;
-//                                         delete flag.flagCode;
-//                                         flag.service = service;
-//                                     });
-//                                     item.flags = flags;
-//                                     resolve()
-//                                 } else {
-//                                     reject()
-//                                 }
-//                             });
-//                         });
-//                     }).catch(() => {
-//                         reject()
-//                     });
-//                 }).then(() => {
-//                     console.log(tries)
-//                     return res.send(tries);
-//                 }).catch(() => {
-//                     res.statusCode = 500;
-//                     return res.send({ error: 'Server error' });
-//                 })
-//             } else {
-//                 res.statusCode = 500;
-//                 return res.send({ error: 'Server error' });
-//             }
-//         });
-//     }).catch(() => {
-//         res.statusCode = 500;
-//         return res.send({ error: 'Server error' });
-//     })
-// });
-
-// //Get flags
-// app.post('/api/flags', (req, res) => {
-//     FlagModel.find({ 'tryId': req.body.tryId }, function (err, flags) {
-//         if (!err) {
-//             flags.forEach(flag => {
-//                 delete flag.flagCode;
-//             });
-//             return res.send(flags);
-//         } else {
-//             res.statusCode = 500;
-//             return res.send({ error: 'Server error' });
-//         }
-//     });
-// });
-
-// //Get services
-// app.get('/api/services', (req, res) => {
-//     getServices().then((result) => {
-//         result.forEach(service => {
-//             FlagModel.find({ 'serviceId': service.id }, function (err, flags) {
-//                 if (!err) {
-//                     flags.forEach(flag => {
-//                         TryModel.findOne({ 'id': flag.tryId }, function (err, item) {
-//                             if (!err) {
-//                                 UserModel.findOne({ 'id': item.userId }, function (err, user) {
-//                                     if (!err) {
-//                                         delete item.userId;
-//                                         delete user.token;
-//                                         item.user = user;
-//                                     } else {
-//                                         res.statusCode = 500;
-//                                         return res.send({ error: 'Server error' });
-//                                     }
-//                                 });
-//                                 delete flag.tryId;
-//                                 flag.try = item;
-//                             } else {
-//                                 res.statusCode = 500;
-//                                 return res.send({ error: 'Server error' });
-//                             }
-//                         });
-//                     });
-//                     service.flags = flags;
-//                 } else {
-//                     res.statusCode = 500;
-//                     return res.send({ error: 'Server error' });
-//                 }
-//             });
-//         });
-//         return res.send(result);
-//     }).catch(() => {
-//         res.statusCode = 500;
-//         return res.send({ error: 'Server error' });
-//     })
-// });
-
-
 
 app.listen(config.get('port'), () => {
     log.info('Express server listening on port ' + config.get('port'));
