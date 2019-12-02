@@ -16,7 +16,9 @@ import './styles.css';
 import { postPromise } from '../../services/apiService';
 import { API_PATHS } from '../../../constants';
 
-import LogoImg from '../../../images/logo.png';
+import LogoImg from '../../../images/logo.svg';
+import ComputerImg from '../../../images/computer.svg';
+
 
 const styles = {
   grow: {
@@ -65,7 +67,9 @@ class Header extends React.Component {
         registrationPassword,
         inviteId,
       } = this.state;
-      const { classes, isLogin, logIn, logOut } = this.props;
+      const {
+        classes, isLogin, logIn, logOut,
+      } = this.props;
 
       const open = !!anchorEl;
       const id = open ? 'simple-popover' : undefined;
@@ -73,8 +77,9 @@ class Header extends React.Component {
       return (
         <div className="header">
           <Toolbar>
-            <LogoImg />
-            <Typography variant="h6" color="inherit" className={classes.grow}>Clean manager</Typography>
+            <div className="logo_container">
+              <img className="image" src={LogoImg} onClick={() => window.location.reload()} />
+            </div>
             {isLogin ? (
               <IconButton
                 onClick={(event) => {
@@ -123,7 +128,7 @@ class Header extends React.Component {
           >
             <div className="popover">
               {
-                popupMode === 'account' && <div className="link" onClick={() => { logOut(); this.setState({ anchorEl: null }) }}>LogOut</div>
+                popupMode === 'account' && <div className="link" onClick={() => { logOut(); this.setState({ anchorEl: null }); }}>LogOut</div>
             }
               {
                 popupMode === 'logIn' && (
@@ -136,7 +141,7 @@ class Header extends React.Component {
                     onChange={(e) => { this.setState({ name: e.target.value }); }}
                   />
                   <TextField label="Password" className={classes.textField} value={password} fullWidth onChange={(e) => { this.setState({ password: e.target.value }); }} />
-                  <Button variant="contained" color="primary" className={classes.button} onClick={() => { logIn(name, password); this.setState({ anchorEl: null }) }}>
+                  <Button variant="contained" color="primary" className={classes.button} onClick={() => { logIn(name, password); this.setState({ anchorEl: null }); }}>
                         LogIn
                   </Button>
 
@@ -155,7 +160,7 @@ class Header extends React.Component {
                   />
                   <TextField label="Password" className={classes.textField} value={registrationPassword} fullWidth onChange={(e) => { this.setState({ registrationPassword: e.target.value }); }} />
                   <TextField label="Invite code" className={classes.textField} value={inviteId} fullWidth onChange={(e) => { this.setState({ inviteId: e.target.value }); }} />
-                  <Button variant="contained" color="primary" className={classes.button} onClick={() => { this.createUser(registrationName, registrationPassword, inviteId); this.setState({ anchorEl: null }) }}>
+                  <Button variant="contained" color="primary" className={classes.button} onClick={() => { this.createUser(registrationName, registrationPassword, inviteId); this.setState({ anchorEl: null }); }}>
                         Create account
                   </Button>
                 </>

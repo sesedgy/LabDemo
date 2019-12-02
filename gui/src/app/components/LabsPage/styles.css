@@ -30,14 +30,21 @@
     justify-content: center;
     cursor: pointer;
     border-radius: 10px;
+    position: relative;
 }
 
 .services_container .row .service .image {
     width: 70px;
 }
 
-.services_container .row .service .label {
+.services_container .row .service .image-target {
+    position: absolute;
+    width: 100px;
+    top: 4px;
+}
 
+.services_container .row .service .label {
+    margin-top: 12px;
 }
 
 .right-bar {
@@ -78,9 +85,24 @@
     font-size: 18px;
 
 }
-.right-bar .solutions_container .solutions-list .solution {
+
+.right-bar .solutions_container .solutions-list .solution_container {
+    position: relative;
+}
+
+.right-bar .solutions_container .solutions-list .solution_container .arrow-right {
+    width: 22px;
+    height: 22px;
+    position: absolute;
+    top: 12px;
+    left: -12px;
+}
+
+.right-bar .solutions_container .solutions-list .solution_container .solution {
     padding: 10px 10px;
     cursor: pointer;
     background-color: #182B38;
     margin-bottom: 10px;
+    width: 90%;
+    margin-left: auto;
 }

@@ -12,7 +12,7 @@ export const API_PATHS = {
     GET_FLAGS: 'flags',
   },
   POST: {
-    GET_USERS: 'users',
+    GET_USER: 'user',
     CREATE_TRY: 'tries/createTry',
     CHECK_FLAG: 'tries/checkFlag',
     LOG_IN: 'users/login',

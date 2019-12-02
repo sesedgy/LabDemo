@@ -36,27 +36,11 @@ module.exports = {
         }],
       },
       {
-        test: /\.less$/,
-        use: [{
-          loader: 'style-loader',
-        }, {
-          loader: 'css-loader',
-        }, {
-          loader: 'less-loader',
-        }],
-      },
-      {
         test: /\.(gif|png|jpe?g|svg)$/i,
-          exclude: /node_modules/,
-
-          use: [
-          'file-loader',
+        exclude: /node_modules/,
+        use: [
           {
-            loader: 'image-webpack-loader',
-            options: {
-              bypassOnDebug: true, // webpack@1.x
-              disable: true, // webpack@2.x and newer
-            },
+            loader: 'file-loader',
           },
         ],
       },

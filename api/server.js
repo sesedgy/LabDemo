@@ -52,7 +52,7 @@ const getLab = () => {
             let flags = [];
             response = JSON.parse(response.body);
             response.services.forEach(service => {
-                service.flag.forEach(flag => flags.push(flag));
+                service.flag.forEach(flag => {flag.serviceName = service.name; flags.push(flag)});
             });
             const result = {
                 labId: response.id,
@@ -198,10 +198,14 @@ app.get('/api/tries', (req, res) => {
 
 //Get flags
 app.get('/api/flags', (req, res) => {
-    FlagModel.find({}, function (err, flags) {
+    FlagModel.find({flagStatus: 'solved'}, function (err, flags) {
         if (!err) {
-            flags.forEach(flag => {
-                delete flag.flagCode;
+            flags = flags.map(flag => {
+                return {
+                    tryId: flag.tryId,
+                    serviceName: flag.serviceName,
+                    flagType: flag.flagType,
+                }
             });
             return res.send(flags);
         } else {
@@ -213,13 +217,13 @@ app.get('/api/flags', (req, res) => {
 
 //Get user by token
 app.post('/api/user', (req, res) => {
-    getServices().then((result) => {
-        delete result.password;
-        delete result.token;
-        return res.send(result);
-    }).catch(() => {
-        res.statusCode = 500;
-        return res.send({error: 'Server error'});
+    UserModel.findOne({token:req.body.token }, (err, user) => {
+        if (!err) {
+            return res.send({_id: user._id, name: user.name});
+        } else {
+            res.statusCode = 500;
+            return res.send({error: 'Server error'});
+        }
     });
 });
 
@@ -273,7 +277,7 @@ app.post('/api/tries/createTry', (req, res) => {
                                         flagType: flag.flag_type,
                                         flagStatus: "unsolved",
                                         tryId: item._id,
-                                        serviceId: flag.service_id,
+                                        serviceName: flag.serviceName,
                                     });
                                     console.log("////////////////////")
                                     console.log(newFlag)

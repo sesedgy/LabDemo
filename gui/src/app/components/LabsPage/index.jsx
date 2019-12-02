@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
-
-import './styles.css';
-import { NotificationManager } from 'react-notifications';
 import moment from 'moment';
 import Button from '@material-ui/core/Button';
 import Countdown from 'react-countdown-now';
@@ -11,10 +8,14 @@ import {
   createTry,
   getFlags, getServices, getTries, getUserId, sendFlag,
 } from '../../services/apiService';
-import { API_PATHS, HOURS_FROM_LAST_LAB } from '../../../constants';
-import { cookiesNames, getCookie } from '../../services/authService';
+import { HOURS_FROM_LAST_LAB } from '../../../constants';
 
 import ComputerImg from '../../../images/computer.svg';
+import TargetImg from '../../../images/target.svg';
+import RightArrow from '../../../images/right-arrow.svg';
+import Tooltip from '../Tooltip';
+
+import './styles.css';
 
 
 const styles = {
@@ -46,6 +47,7 @@ class LabsPage extends Component {
       flags: [],
       isOtherUserMode: false,
       flag: '',
+      selectedSolutionId: null,
     };
 
     componentDidMount() {
@@ -60,9 +62,8 @@ class LabsPage extends Component {
 
           const tries = this.allTries.filter(item => item.userId === userId);
           const lastTry = tries[tries.length - 1];
-          let flags = [];
           if (lastTry) {
-            flags = this.allFlags.filter(flag => flag.tryId === lastTry._id);
+            this.selectSolution(lastTry._id);
           }
           this.allServices.forEach((service) => {
             service.flags = this.allFlags
@@ -73,7 +74,6 @@ class LabsPage extends Component {
 
           this.setState({
             userId,
-            flags,
             tries,
           });
         });
@@ -81,20 +81,47 @@ class LabsPage extends Component {
     }
 
     createTry = () => {
+      const { userId } = this.state;
       createTry().then(() => {
-        getTries();
+        getTries().then((result) => {
+          this.allTries = result;
+          const tries = this.allTries.filter(item => item.userId === userId);
+          this.setState({
+            tries,
+            flags: [],
+          });
+        });
       });
     };
 
     sendFlag = () => {
+      const { userId } = this.state;
       sendFlag(this.state.flag).then(() => {
-        this.setState({ flag: '' });
+        getFlags().then((result) => {
+          this.allFlags = result;
+          const tries = this.allTries.filter(item => item.userId === userId);
+          const lastTry = tries[tries.length - 1];
+          if (lastTry) {
+            this.selectSolution(lastTry._id);
+          }
+          this.setState({
+            flag: '',
+          });
+        });
+      });
+    };
+
+    selectSolution = (tryId) => {
+      const flags = this.allFlags.filter(flag => flag.tryId === tryId);
+      this.setState({
+        selectedSolutionId: tryId,
+        flags,
       });
     };
 
     render() {
       const {
-        tries, services, isOtherUserMode, flag,
+        tries, flags, isOtherUserMode, flag, selectedSolutionId,
       } = this.state;
       const { classes } = this.props;
 
@@ -126,34 +153,43 @@ class LabsPage extends Component {
         }
       }
 
-
-      console.log(tries);
-      console.log(services);
+      console.log('////////////////');
+      console.log(this.allFlags);
+      console.log(flags);
       return (
         <div className="labs-page">
           <div className="services_container">
             <div className="row">
-              {services.filter(service => service.level === 1).map(service => (
-                <div className="service">
-                  <img className="image" src={ComputerImg} />
-                  <div className="label">{service.name}</div>
-                </div>
+              {this.allServices.filter(service => service.level === 1).map(service => (
+                <Tooltip>
+                  <div className="service">
+                    <img className="image" src={ComputerImg} />
+                    <img className="image-target" style={{ display: flags.filter(flag => flag.serviceName === service.name).length > 0 ? 'block' : 'none' }} src={TargetImg} />
+                    <div className="label">{service.name}</div>
+                  </div>
+                </Tooltip>
               ))}
             </div>
             <div className="row">
-              {services.filter(service => service.level === 2).map(service => (
-                <div className="service">
-                  <img className="image" src={ComputerImg} />
-                  <div className="label">{service.name}</div>
-                </div>
+              {this.allServices.filter(service => service.level === 2).map(service => (
+                <Tooltip>
+                  <div className="service">
+                    <img className="image" src={ComputerImg} />
+                    <img className="image-target" style={{ display: flags.filter(flag => flag.serviceName === service.name).length > 0 ? 'block' : 'none' }} src={TargetImg} />
+                    <div className="label">{service.name}</div>
+                  </div>
+                </Tooltip>
               ))}
             </div>
             <div className="row">
-              {services.filter(service => service.level === 3).map(service => (
-                <div className="service">
-                  <img className="image" src={ComputerImg} />
-                  <div className="label">{service.name}</div>
-                </div>
+              {this.allServices.filter(service => service.level === 3).map(service => (
+                <Tooltip>
+                  <div className="service">
+                    <img className="image" src={ComputerImg} />
+                    <img className="image-target" style={{ display: flags.filter(flag => flag.serviceName === service.name).length > 0 ? 'block' : 'none' }} src={TargetImg} />
+                    <div className="label">{service.name}</div>
+                  </div>
+                </Tooltip>
               ))}
             </div>
           </div>
@@ -209,10 +245,15 @@ class LabsPage extends Component {
               )}
             <div className="solutions_container">
               <div className="user">
-                {isOtherUserMode ? '' : 'Your solutions'}
+                {tries.length > 0 && <>{isOtherUserMode ? '' : 'Your solutions'}</>}
               </div>
               <div className="solutions-list">
-                {tries.map(item => <div className="solution">{item.tryName}</div>)}
+                {tries.map(item => (
+                  <div className="solution_container">
+                    {selectedSolutionId === item._id && <img className="arrow-right" src={RightArrow} />}
+                    <div className="solution" onClick={() => { this.selectSolution(item._id); }}>{item.tryName}</div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
