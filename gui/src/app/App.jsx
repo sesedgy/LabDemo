@@ -33,19 +33,7 @@ const theme = createMuiTheme({
       800: '#fff',
       A400: '#fff',
     },
-  },
-  overrides: {
-    MuiInput: {
-      underline: {
-        '&:before': { // underline color when textfield is inactive
-          backgroundColor: 'red',
-        },
-        '&:hover:not($disabled):before': { // underline color when hovered
-          backgroundColor: 'green',
-        },
-      },
-    },
-  },
+  }
 });
 
 const App = () => (
