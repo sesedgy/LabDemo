@@ -58,8 +58,8 @@ export const getUserId = () => new Promise((resolve) => {
 export const createTry = () => new Promise((resolve) => {
   const tryName = moment().format('HH:mm DD.MM.YYYY');
   postPromise(API_PATHS.POST.CREATE_TRY, { token: getCookie(cookiesNames.token), tryName }).then((response) => {
-    if (!response.data.error) {
-      resolve();
+    if (response && !response.data.error) {
+      resolve(response.data);
     }
   }).catch((error) => {
     NotificationManager.error(error.response.data.error);

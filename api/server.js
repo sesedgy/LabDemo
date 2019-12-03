@@ -22,6 +22,7 @@ app.use(bodyParser.urlencoded({ extended: true })); //Include JSON parser
 app.use(bodyParser.json());
 
 const labAPIUrl = config.get('labApiUrl');
+const hoursFromLastLab = config.get('hoursFromLastLab');
 const getServices = () => {
     return new Promise((resolve, reject) => {
         let clientServerOptions = {
@@ -249,18 +250,21 @@ app.post('/api/tries/createTry', (req, res) => {
                     let finishTimeDate = moment(item.finishTime);
                     let now = moment();
                     labIsActive = now < finishTimeDate;
-                    if(!labIsActive && now > finishTimeDate.add(config.get('hoursFromLastLaba'), 'h')){
+                    if(!labIsActive && now > finishTimeDate.add(hoursFromLastLab, 'hours')){
                         canCreateLab = true;
                     }
                 }else{
                     canCreateLab = true;
                 }
 
+                console.log(canCreateLab);
+                console.log(labIsActive);
+
                 if(canCreateLab){
                     getLab().then((result) => {
                         //Создаем лабу
                         let now = moment();
-                        let finishTime = now.add(config.get('hoursFromLastLaba'), 'h');
+                        let finishTime = moment().add(hoursFromLastLab, 'hours');
                         let newTry = new TryModel({
                             userId: user._id,
                             userName: user.name,
@@ -294,8 +298,18 @@ app.post('/api/tries/createTry', (req, res) => {
 
                 }else if(labIsActive){
                     //Отдаем текущий конфиг
-                    getVPNConfig(item.labId); //TODO Затестить
-                    return "vpnConfig Active laba";
+                    getVPNConfig(item.labId).then(response => {
+                        res.set({
+                            'Content-Disposition': 'attachment; filename="config.ovpn"',
+                            'Content-type': 'application/octet-stream'
+                        });
+                        // const file = new Blob(response.body, {type: 'plain/text'});
+                        res.type('application/octet-stream');
+                        res.send(Buffer.from(response.body));
+                    });
+                    // return res.send("vpnConfig Active laba");
+                    // res.contentType('text/plain');
+                    // res.send('This is the content', { 'Content-Disposition': 'attachment; filename=config.ovpn' });
                 }else {
                     //Не пускаем, так как не прошло время с предыдущей
                     res.statusCode = 500;

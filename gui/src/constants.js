@@ -20,5 +20,5 @@ export const API_PATHS = {
   },
 };
 
-export const HOURS_FROM_LAST_LAB = 30;
+export const HOURS_FROM_LAST_LAB = 1;
 export const COOKIE_EXPIRE_DAYS = 30;

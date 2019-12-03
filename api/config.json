@@ -5,7 +5,7 @@
     "url": "mongodb://Admin:HgMtvW7HN5kz@ds159216.mlab.com:59216/lab_demo"
   },
   "localSalt": "5709d2c181234b308862537c1a4ed03a",
-  "hoursFromLastLab": 10,
+  "hoursFromLastLab": 1,
   "hoursForLabEnd": 5,
   "labApiUrl": "http://51.75.60.194:5000"
 }

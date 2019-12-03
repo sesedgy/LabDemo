@@ -18,8 +18,12 @@
     cursor: pointer;
 }
 
-.login_container {
-
+.header .my-statistic-label{
+    cursor: pointer;
+    min-width: max-content;
+    margin-right: 30px;
+    font-size: 18px;
+    padding: 5px;
 }
 
 .login_container .link {

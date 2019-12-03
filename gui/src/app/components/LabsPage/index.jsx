@@ -27,9 +27,21 @@ const styles = {
   textField: {
     display: 'block',
     margin: '10px',
-    width: '220px',
+    width: 'calc(100% - 20px)',
+    borderColor: '#ffffff',
+  },
+  disabledButton: {
+    color: 'rgba(256, 256, 256, 0.46) !important',
+  },
+  notchedOutline: {
+    borderWidth: '1px',
+    borderColor: '#4fb3bf !important',
+  },
+  floatingLabelFocusStyle: {
+    color: '#4fb3bf',
   },
   button: {
+
     margin: '10px',
     width: 'calc(100% - 20px)',
   },
@@ -157,17 +169,26 @@ class LabsPage extends Component {
       });
     };
 
-    onUserClick = (userId) => {
+    onUserClick = (userId, tryId) => {
       const tries = this.allTries.filter(item => item.userId === userId);
-      const lastTry = tries[tries.length - 1];
-      if (lastTry) {
-        this.selectSolution(lastTry._id);
-      }
+      this.selectSolution(tryId);
 
       this.setState({
         selectedUserId: userId,
         tries,
         flag: '',
+      });
+    };
+
+    getVpnConfig = () => {
+      createTry().then((response) => {
+        response = response.replace('#', '');
+        const link = document.createElement('a');
+        link.download = 'config.ovpn';
+        link.href = `data:text/plain,${response}`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
       });
     };
 
@@ -189,7 +210,7 @@ class LabsPage extends Component {
           lastTry = tries[tries.length - 1];
           now = moment();
           finishTime = moment(lastTry.finishTime);
-          finishTimeWithPause = finishTime.add(HOURS_FROM_LAST_LAB, 'h');
+          finishTimeWithPause = moment(lastTry.finishTime).add(HOURS_FROM_LAST_LAB, 'h');
           if (finishTime > now) {
             labInProgress = true;
           }
@@ -205,7 +226,8 @@ class LabsPage extends Component {
         }
       }
 
-      console.log(this.allServices);
+      console.log(finishTime);
+      console.log(finishTimeWithPause);
       return (
         <div className="labs-page">
           <div className="services_container">
@@ -253,7 +275,7 @@ class LabsPage extends Component {
                 <div className="timer_container">
                   {(labInProgress || labIsDisabled) && (
                   <div className="timer">
-                    <Countdown date={labInProgress ? finishTime : finishTimeWithPause} />
+                    <Countdown date={labInProgress ? finishTime : finishTimeWithPause} onComplete={() => { this.setState({ flag: '' }); }} />
                   </div>
                   )}
                   {(labIsEnabled || labIsDisabled)
@@ -264,6 +286,7 @@ class LabsPage extends Component {
                         color="primary"
                         disabled={labIsDisabled}
                         className={classes.button}
+                        classes={{ disabled: classes.disabledButton }}
                         onClick={() => {
                           this.createTry();
                         }}
@@ -272,14 +295,38 @@ class LabsPage extends Component {
                       </Button>
                     </div>
                     )}
+                  {(labInProgress)
+                    && (
+                    <div className="btn_container">
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        className={classes.button}
+                        onClick={() => {
+                          this.getVpnConfig();
+                        }}
+                      >
+                            Get VPN config
+                      </Button>
+                    </div>
+                    )}
                 </div>
                   {labInProgress && (
                   <div className="flag_container">
                     <TextField
                       label="Name"
+                      InputProps={{
+                        classes: {
+                          notchedOutline: classes.notchedOutline,
+                        },
+                      }}
+                      InputLabelProps={{
+                        className: classes.floatingLabelFocusStyle,
+                      }}
                       className={classes.textField}
                       value={flag}
                       fullWidth
+                      variant="outlined"
                       onChange={(e) => { this.setState({ flag: e.target.value }); }}
                     />
                     <Button

@@ -17,8 +17,8 @@ const theme = createMuiTheme({
       300: '#4fb3bf',
       400: '#4fb3bf',
       500: '#4fb3bf',
-      600: '#163142',
-      700: '#163142',
+      600: '#4fb3bf',
+      700: '#4e8592',
       800: '#142631',
       900: '#142631',
       A100: '#4fb3bf',
@@ -32,6 +32,18 @@ const theme = createMuiTheme({
       700: '#fff',
       800: '#fff',
       A400: '#fff',
+    },
+  },
+  overrides: {
+    MuiInput: {
+      underline: {
+        '&:before': { // underline color when textfield is inactive
+          backgroundColor: 'red',
+        },
+        '&:hover:not($disabled):before': { // underline color when hovered
+          backgroundColor: 'green',
+        },
+      },
     },
   },
 });

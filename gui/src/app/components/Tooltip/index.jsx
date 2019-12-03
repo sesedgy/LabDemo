@@ -1,8 +1,10 @@
 import React from 'react';
 import Tippy from '@tippy.js/react';
-
 import 'tippy.js/dist/tippy.css';
+
 import RootLabel from '../RootLabel';
+
+import './styles.css';
 
 const Tooltip = ({
   children,
@@ -13,9 +15,6 @@ const Tooltip = ({
   const myResults = flagsList.filter(flag => flag.userId === userId);
   const otherResults = flagsList.filter(flag => flag.userId !== userId);
 
-  console.log(flagsList)
-    console.log(myResults)
-  console.log(otherResults)
   return (
     <Tippy
       content={(
@@ -23,21 +22,32 @@ const Tooltip = ({
           className="tooltip-content_container"
         >
           <div className="my-results">
-            {myResults.map(flag => (
-              <div className="result">
-                <span className="time">{flag.wasteTime}</span>
-                { flag.flagType === '1' && <RootLabel /> }
-              </div>
-            ))}
+            <div className="label">My results</div>
+            {myResults.length > 0 ? (
+              <>
+                {myResults.map(flag => (
+                  <div className="result">
+                    <span className="time">{flag.wasteTime}</span>
+                    { flag.flagType === '1' && <RootLabel /> }
+                  </div>
+                ))}
+              </>
+            ) : <div>empty</div>}
           </div>
           <div className="other-results">
-            {otherResults.map(flag => (
-              <div className="result">
-                <span className="username">{flag.userName}</span>
-                <span className="time">{flag.wasteTime}</span>
-                { flag.flagType === '1' && <RootLabel /> }
-              </div>
-            ))}
+            <div className="label">Other results</div>
+            {otherResults.length > 0 ? (
+              <>
+                {otherResults.map(flag => (
+                  <div className="result" onClick={() => {onUserClick(flag.userId, flag.tryId)}}>
+                    <span className="username">{flag.userName}</span>
+                    <span className="time">{flag.wasteTime}</span>
+                    { flag.flagType === '1' && <RootLabel /> }
+                  </div>
+                ))}
+              </>
+            ) : <div>empty</div>}
+
           </div>
         </div>
     )}

@@ -1,0 +1,49 @@
+.tooltip-content_container {
+    padding: 3px;
+    font-size: 15px;
+
+}
+
+
+.tooltip-content_container .my-results {
+
+}
+
+.tooltip-content_container .label {
+    padding-bottom: 4px;
+    border-bottom: 1px solid;
+    text-align: center;
+    margin-bottom: 6px;
+    cursor: default;
+}
+
+.tooltip-content_container .result {
+    margin-bottom: 3px;
+    display: flex;
+    padding: 2px;
+    cursor: default;
+}
+
+.tooltip-content_container .time {
+    margin-right: 10px;
+}
+
+.tooltip-content_container .root-label {
+    margin: auto;
+    height: 10px;
+    line-height: 10px;
+}
+
+
+.tooltip-content_container .other-results {
+    margin-top: 10px;
+}
+
+.tooltip-content_container .other-results .result .username {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.tooltip-content_container .other-results .result {
+    cursor: pointer;
+}
