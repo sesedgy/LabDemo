@@ -1,19 +1,16 @@
-import React, { Component } from 'react'; import hash from 'object-hash';
-
-
-import { NotificationContainer, NotificationManager } from 'react-notifications';
-import {
-  cookiesNames, deleteCookie, getCookie, setCookie,
-} from '../../services/authService';
+import React, { Component } from 'react';
+import { NotificationContainer } from 'react-notifications';
 
 import Header from '../../components/Header';
 import LabsPage from '../../components/LabsPage';
 import PromoPage from '../../components/PromoPage';
 
+import {
+  cookiesNames, deleteCookie, getCookie,
+} from '../../services/authService';
+import { logIn } from '../../services/apiService';
 
 import './styles.css';
-import { postPromise } from '../../services/apiService';
-import { API_PATHS } from '../../../constants';
 
 class MainPage extends Component {
     state = {
@@ -21,15 +18,8 @@ class MainPage extends Component {
     };
 
     logIn = (name, password) => {
-      password = hash.MD5(password);
-      postPromise(API_PATHS.POST.LOG_IN, { name, password }).then((response) => {
-        if (response.error) {
-          NotificationManager.error('Error', response.error);
-        } else {
-          setCookie(cookiesNames.token, response.data);
-          NotificationManager.success('Successful LogIn', '');
-          this.setState({ isLogin: true });
-        }
+      logIn(name, password).then(() => {
+        this.setState({ isLogin: true });
       });
     };
 

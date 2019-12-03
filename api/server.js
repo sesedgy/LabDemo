@@ -125,10 +125,10 @@ app.post('/api/users', (req, res) => {
             let user = new UserModel({
                 name: req.body.name,
                 password: HashService.getHash(req.body.password),
-                inviteId: invite.id,
+                inviteId: invite._id,
             });
             InviteModel.update(
-                {id: invite.id},
+                {_id: invite._id},
                 {$set: {'status': "used"}},
                 function (err) {
                     if (!err){
@@ -157,7 +157,7 @@ app.post('/api/users', (req, res) => {
 app.post('/api/users/login', (req, res) => {
     UserModel.findOne({ 'name': req.body.name }, (err, user) => {
         if (!err) {
-            if(HashService.compareWithHash(req.body.password, user.password)){
+            if(user && HashService.compareWithHash(req.body.password, user.password)){
                 let token = HashService.createGuidString();
                 UserModel.update(
                     {_id: user._id},
@@ -175,6 +175,7 @@ app.post('/api/users/login', (req, res) => {
                 return res.send({ error: 'Wrong username/password' });
             }
         } else {
+            console.log('Tut')
             res.statusCode = 500;
             return res.send({ error: 'Wrong username/password' });
         }

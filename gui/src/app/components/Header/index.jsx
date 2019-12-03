@@ -1,23 +1,18 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import hash from 'object-hash';
 
 import IconButton from '@material-ui/core/IconButton/IconButton';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import Toolbar from '@material-ui/core/Toolbar/Toolbar';
-import Typography from '@material-ui/core/Typography/Typography';
 import Popover from '@material-ui/core/Popover';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-
-import { NotificationManager } from 'react-notifications';
-
-import './styles.css';
-import { postPromise } from '../../services/apiService';
-import { API_PATHS } from '../../../constants';
+import {createUser} from '../../services/apiService';
 
 import LogoImg from '../../../images/logo.svg';
-import ComputerImg from '../../../images/computer.svg';
+
+import './styles.css';
+
 
 
 const styles = {
@@ -46,17 +41,6 @@ class Header extends React.Component {
       registrationName: '',
       registrationPassword: '',
       inviteId: '',
-    };
-
-    createUser = (name, password, inviteCode) => {
-      password = hash.MD5(password);
-      postPromise(API_PATHS.POST.CREATE_USER, { name, password, inviteCode }).then((response) => {
-        if (response.error) {
-          NotificationManager.error('Error', response.error);
-        } else {
-          NotificationManager.success('Successful registration', '');
-        }
-      });
     };
 
     render() {
@@ -168,7 +152,7 @@ class Header extends React.Component {
                   />
                   <TextField label="Password" className={classes.textField} value={registrationPassword} fullWidth onChange={(e) => { this.setState({ registrationPassword: e.target.value }); }} />
                   <TextField label="Invite code" className={classes.textField} value={inviteId} fullWidth onChange={(e) => { this.setState({ inviteId: e.target.value }); }} />
-                  <Button variant="contained" color="primary" className={classes.button} onClick={() => { this.createUser(registrationName, registrationPassword, inviteId); this.setState({ anchorEl: null }); }}>
+                  <Button variant="contained" color="primary" className={classes.button} onClick={() => { createUser(registrationName, registrationPassword, inviteId); this.setState({ anchorEl: null }); }}>
                         Create account
                   </Button>
                 </>

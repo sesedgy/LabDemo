@@ -2,8 +2,9 @@ import axios from 'axios';
 import moment from 'moment';
 
 import { NotificationManager } from 'react-notifications';
+import hash from 'object-hash';
 import { API_CONFIG, API_PATHS } from '../../constants';
-import { cookiesNames, getCookie } from './authService';
+import { cookiesNames, getCookie, setCookie } from './authService';
 
 const instance = axios.create({
   baseURL: `${API_CONFIG.protocol}://${API_CONFIG.hostName}`,
@@ -70,6 +71,31 @@ export const sendFlag = flagCode => new Promise((resolve) => {
   postPromise(API_PATHS.POST.CHECK_FLAG, { flagCode }).then((response) => {
     if (!response.data.error) {
       NotificationManager.success('Flag is correct', '');
+      resolve();
+    }
+  }).catch((error) => {
+    NotificationManager.error(error.response.data.error);
+  });
+});
+
+export const createUser = (name, password, inviteCode) => new Promise((resolve) => {
+  password = hash.MD5(password);
+  postPromise(API_PATHS.POST.CREATE_USER, { name, password, inviteCode }).then((response) => {
+    if (!response.data.error) {
+      NotificationManager.success('Successful registration', '');
+      resolve();
+    }
+  }).catch((error) => {
+    NotificationManager.error(error.response.data.error);
+  });
+});
+
+export const logIn = (name, password) => new Promise((resolve) => {
+  password = hash.MD5(password);
+  postPromise(API_PATHS.POST.LOG_IN, { name, password }).then((response) => {
+    if (!response.data.error) {
+      setCookie(cookiesNames.token, response.data);
+      NotificationManager.success('Successful LogIn', '');
       resolve();
     }
   }).catch((error) => {
