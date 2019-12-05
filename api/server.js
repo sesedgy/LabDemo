@@ -175,7 +175,6 @@ app.post('/api/users/login', (req, res) => {
                 return res.send({ error: 'Wrong username/password' });
             }
         } else {
-            console.log('Tut')
             res.statusCode = 500;
             return res.send({ error: 'Wrong username/password' });
         }
@@ -222,7 +221,12 @@ app.get('/api/flags', (req, res) => {
 app.post('/api/user', (req, res) => {
     UserModel.findOne({token:req.body.token }, (err, user) => {
         if (!err) {
-            return res.send({_id: user._id, name: user.name});
+            if(user) {
+                return res.send({_id: user._id, name: user.name});
+            }else{
+                res.statusCode = 500;
+                return res.send({error: 'LogIn error'});
+            }
         } else {
             res.statusCode = 500;
             return res.send({error: 'Server error'});
@@ -257,9 +261,6 @@ app.post('/api/tries/createTry', (req, res) => {
                 }else{
                     canCreateLab = true;
                 }
-
-                console.log(canCreateLab);
-                console.log(labIsActive);
 
                 if(canCreateLab){
                     getLab().then((result) => {

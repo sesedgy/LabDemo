@@ -226,8 +226,6 @@ class LabsPage extends Component {
         }
       }
 
-      console.log(finishTime);
-      console.log(finishTimeWithPause);
       return (
         <div className="labs-page">
           <div className="services_container">

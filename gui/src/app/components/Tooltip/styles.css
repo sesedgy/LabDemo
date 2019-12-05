@@ -29,7 +29,7 @@
 }
 
 .tooltip-content_container .root-label {
-    margin: auto;
+    margin-left: auto;
     height: 10px;
     line-height: 10px;
 }

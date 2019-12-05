@@ -4,7 +4,7 @@ import moment from 'moment';
 import { NotificationManager } from 'react-notifications';
 import hash from 'object-hash';
 import { API_CONFIG, API_PATHS } from '../../constants';
-import { cookiesNames, getCookie, setCookie } from './authService';
+import {cookiesNames, deleteCookie, getCookie, setCookie} from './authService';
 
 const instance = axios.create({
   baseURL: `${API_CONFIG.protocol}://${API_CONFIG.hostName}`,
@@ -52,6 +52,8 @@ export const getUserId = () => new Promise((resolve) => {
       resolve(response.data._id);
     }
   }).catch((error) => {
+    deleteCookie();
+    window.location.reload();
     NotificationManager.error(error.response.data.error);
   });
 });
