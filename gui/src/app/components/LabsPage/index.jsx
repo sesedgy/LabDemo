@@ -182,6 +182,7 @@ class LabsPage extends Component {
 
     getVpnConfig = () => {
       createTry().then((response) => {
+
         response = response.replace('#', '');
         const link = document.createElement('a');
         link.download = 'config.ovpn';
@@ -232,7 +233,7 @@ class LabsPage extends Component {
             <div className="row">
               {this.allServices.filter(service => service.level === 1).map(service => (
                 <Tooltip onUserClick={this.onUserClick} flagsList={service.flags} userId={userId}>
-                  <div className="service">
+                  <div className="service" style={{ opacity: flags.filter(item => item.serviceName === service.name).length === 0 ? 0.5 : 1 }}>
                     <img className="image" src={ComputerImg} alt="" />
                     <img className="image-target" style={{ display: flags.filter(item => item.serviceName === service.name).length > 0 ? 'block' : 'none' }} src={TargetImg} alt="" />
                     <div className="label">{service.name}</div>
@@ -244,7 +245,7 @@ class LabsPage extends Component {
             <div className="row">
               {this.allServices.filter(service => service.level === 2).map(service => (
                 <Tooltip onUserClick={this.onUserClick} flagsList={service.flags} userId={userId}>
-                  <div className="service">
+                  <div className="service" style={{ opacity: flags.filter(item => item.serviceName === service.name).length === 0 ? 0.5 : 1 }}>
                     <img className="image" src={ComputerImg} alt="" />
                     <img className="image-target" style={{ display: flags.filter(item => item.serviceName === service.name).length > 0 ? 'block' : 'none' }} src={TargetImg} alt="" />
                     <div className="label">{service.name}</div>
@@ -256,7 +257,7 @@ class LabsPage extends Component {
             <div className="row">
               {this.allServices.filter(service => service.level === 3).map(service => (
                 <Tooltip onUserClick={this.onUserClick} flagsList={service.flags} userId={userId}>
-                  <div className="service">
+                  <div className="service" style={{ opacity: flags.filter(item => item.serviceName === service.name).length === 0 ? 0.5 : 1 }}>
                     <img className="image" src={ComputerImg} alt="" />
                     <img className="image-target" style={{ display: flags.filter(item => item.serviceName === service.name).length > 0 ? 'block' : 'none' }} src={TargetImg} alt="" />
                     <div className="label">{service.name}</div>

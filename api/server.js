@@ -247,7 +247,7 @@ app.get('/api/services', (req, res) => {
 //Create try
 app.post('/api/tries/createTry', (req, res) => {
     getUser(req.body).then((user) => {
-        TryModel.findOne({'userId': user._id}, {}, { sort: { 'created_at' : -1 } }, (err, item) => {
+        TryModel.findOne({'userId': user._id}, {}, { sort: { 'startTime' : -1 } }, (err, item) => {
             if (!err) {
                 let canCreateLab = false;
                 let labIsActive = false;

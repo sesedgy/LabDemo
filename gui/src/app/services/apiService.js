@@ -4,7 +4,9 @@ import moment from 'moment';
 import { NotificationManager } from 'react-notifications';
 import hash from 'object-hash';
 import { API_CONFIG, API_PATHS } from '../../constants';
-import {cookiesNames, deleteCookie, getCookie, setCookie} from './authService';
+import {
+  cookiesNames, deleteCookie, getCookie, setCookie,
+} from './authService';
 
 const instance = axios.create({
   baseURL: `${API_CONFIG.protocol}://${API_CONFIG.hostName}`,
@@ -22,7 +24,7 @@ export const getTries = () => new Promise((resolve) => {
         resolve(response.data);
       }
     }).catch((error) => {
-      NotificationManager.error(error.response.data.error);
+      NotificationManager.error(error.response ? error.response.data.error : error.toString());
     });
 });
 
@@ -32,7 +34,7 @@ export const getServices = () => new Promise((resolve) => {
       resolve(response.data);
     }
   }).catch((error) => {
-    NotificationManager.error(error.response.data.error);
+    NotificationManager.error(error.response ? error.response.data.error : error.toString());
   });
 });
 
@@ -42,7 +44,7 @@ export const getFlags = () => new Promise((resolve) => {
       resolve(response.data);
     }
   }).catch((error) => {
-    NotificationManager.error(error.response.data.error);
+    NotificationManager.error(error.response ? error.response.data.error : error.toString());
   });
 });
 
@@ -54,7 +56,7 @@ export const getUserId = () => new Promise((resolve) => {
   }).catch((error) => {
     deleteCookie();
     window.location.reload();
-    NotificationManager.error(error.response.data.error);
+    NotificationManager.error(error.response ? error.response.data.error : error.toString());
   });
 });
 
@@ -65,7 +67,7 @@ export const createTry = () => new Promise((resolve) => {
       resolve(response.data);
     }
   }).catch((error) => {
-    NotificationManager.error(error.response.data.error);
+    NotificationManager.error(error.response ? error.response.data.error : error.toString());
   });
 });
 
@@ -76,7 +78,7 @@ export const sendFlag = flagCode => new Promise((resolve) => {
       resolve();
     }
   }).catch((error) => {
-    NotificationManager.error(error.response.data.error);
+    NotificationManager.error(error.response ? error.response.data.error : error.toString());
   });
 });
 
@@ -88,7 +90,7 @@ export const createUser = (name, password, inviteCode) => new Promise((resolve) 
       resolve();
     }
   }).catch((error) => {
-    NotificationManager.error(error.response.data.error);
+    NotificationManager.error(error.response ? error.response.data.error : error.toString());
   });
 });
 
@@ -101,6 +103,6 @@ export const logIn = (name, password) => new Promise((resolve) => {
       resolve();
     }
   }).catch((error) => {
-    NotificationManager.error(error.response.data.error);
+    NotificationManager.error(error.response ? error.response.data.error : error.toString());
   });
 });
