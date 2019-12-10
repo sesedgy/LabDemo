@@ -81,7 +81,7 @@ class LabsPage extends Component {
           this.allServices = this.allServices.map(service => ({
             ...service,
             flags: this.allFlags
-              .filter(flag => flag.serviceName === service.name)
+              .filter(flag => flag.serviceName === service.name && flag.flagStatus === 'solved')
               .map((flag) => {
                 const item = this.allTries.find(item => item._id === flag.tryId);
                 let submitTime = moment(flag.submitTime);
@@ -136,7 +136,7 @@ class LabsPage extends Component {
           this.allServices = this.allServices.map(service => ({
             ...service,
             flags: this.allFlags
-              .filter(flag => flag.serviceName === service.name)
+              .filter(flag => flag.serviceName === service.name && flag.flagStatus === 'solved')
               .map((flag) => {
                 const item = this.allTries.find(item => item._id === flag.tryId);
                 let submitTime = moment(flag.submitTime);
@@ -182,12 +182,13 @@ class LabsPage extends Component {
 
     getVpnConfig = () => {
       createTry().then((response) => {
+        response = response.replace(/#/g, '//');
 
-        response = response.replace('#', '');
+        const blob = new Blob([response], { type: 'text/plain' });
         const link = document.createElement('a');
-        link.download = 'config.ovpn';
-        link.href = `data:text/plain,${response}`;
         document.body.appendChild(link);
+        link.setAttribute('download', 'config.ovpn');
+        link.setAttribute('href', window.URL.createObjectURL(blob));
         link.click();
         document.body.removeChild(link);
       });
@@ -235,9 +236,9 @@ class LabsPage extends Component {
                 <Tooltip onUserClick={this.onUserClick} flagsList={service.flags} userId={userId}>
                   <div className="service" style={{ opacity: flags.filter(item => item.serviceName === service.name).length === 0 ? 0.5 : 1 }}>
                     <img className="image" src={ComputerImg} alt="" />
-                    <img className="image-target" style={{ display: flags.filter(item => item.serviceName === service.name).length > 0 ? 'block' : 'none' }} src={TargetImg} alt="" />
+                    <img className="image-target" style={{ display: flags.filter(item => item.serviceName === service.name && item.flagStatus === 'solved').length > 0 ? 'block' : 'none' }} src={TargetImg} alt="" />
                     <div className="label">{service.name}</div>
-                    {flags.some(item => item.serviceName === service.name && item.flagType === '1') && <RootLabel />}
+                    {flags.some(item => item.serviceName === service.name && item.flagType === '1' && item.flagStatus === 'solved') && <RootLabel />}
                   </div>
                 </Tooltip>
               ))}
@@ -247,9 +248,9 @@ class LabsPage extends Component {
                 <Tooltip onUserClick={this.onUserClick} flagsList={service.flags} userId={userId}>
                   <div className="service" style={{ opacity: flags.filter(item => item.serviceName === service.name).length === 0 ? 0.5 : 1 }}>
                     <img className="image" src={ComputerImg} alt="" />
-                    <img className="image-target" style={{ display: flags.filter(item => item.serviceName === service.name).length > 0 ? 'block' : 'none' }} src={TargetImg} alt="" />
+                    <img className="image-target" style={{ display: flags.filter(item => item.serviceName === service.name && item.flagStatus === 'solved').length > 0 ? 'block' : 'none' }} src={TargetImg} alt="" />
                     <div className="label">{service.name}</div>
-                    {flags.some(item => item.serviceName === service.name && item.flagType === '1') && <RootLabel />}
+                    {flags.some(item => item.serviceName === service.name && item.flagType === '1' && item.flagStatus === 'solved') && <RootLabel />}
                   </div>
                 </Tooltip>
               ))}
@@ -259,9 +260,9 @@ class LabsPage extends Component {
                 <Tooltip onUserClick={this.onUserClick} flagsList={service.flags} userId={userId}>
                   <div className="service" style={{ opacity: flags.filter(item => item.serviceName === service.name).length === 0 ? 0.5 : 1 }}>
                     <img className="image" src={ComputerImg} alt="" />
-                    <img className="image-target" style={{ display: flags.filter(item => item.serviceName === service.name).length > 0 ? 'block' : 'none' }} src={TargetImg} alt="" />
+                    <img className="image-target" style={{ display: flags.filter(item => item.serviceName === service.name && item.flagStatus === 'solved').length > 0 ? 'block' : 'none' }} src={TargetImg} alt="" />
                     <div className="label">{service.name}</div>
-                    {flags.some(item => item.serviceName === service.name && item.flagType === '1') && <RootLabel />}
+                    {flags.some(item => item.serviceName === service.name && item.flagType === '1' && item.flagStatus === 'solved') && <RootLabel />}
                   </div>
                 </Tooltip>
               ))}

@@ -199,14 +199,15 @@ app.get('/api/tries', (req, res) => {
 
 //Get flags
 app.get('/api/flags', (req, res) => {
-    FlagModel.find({flagStatus: 'solved'}, function (err, flags) {
+    FlagModel.find({}, function (err, flags) {
         if (!err) {
             flags = flags.map(flag => {
                 return {
                     tryId: flag.tryId,
                     serviceName: flag.serviceName,
                     flagType: flag.flagType,
-                    submitTime: flag.submitTime
+                    submitTime: flag.submitTime,
+                    flagStatus: flag.flagStatus
                 }
             });
             return res.send(flags);
@@ -276,7 +277,7 @@ app.post('/api/tries/createTry', (req, res) => {
                             labId: result.labId
                         });
                         newTry.save((err, item) => {
-                            saveLab(result.labId, item.id).then(() => {
+                            saveLab(result.labId, item._id).then(() => {
                                 result.flags.forEach(flag => {
                                     let newFlag = new FlagModel({
                                         flagCode: flag.flag_code,
