@@ -52,14 +52,18 @@ const getLab = () => {
             }
             let flags = [];
             response = JSON.parse(response.body);
-            response.services.forEach(service => {
-                service.flag.forEach(flag => {flag.serviceName = service.name; flags.push(flag)});
-            });
-            const result = {
-                labId: response.id,
-                flags: flags
-            };
-            resolve(result);
+            if(response.services){
+                response.services.forEach(service => {
+                    service.flag.forEach(flag => {flag.serviceName = service.name; flags.push(flag)});
+                });
+                const result = {
+                    labId: response.id,
+                    flags: flags
+                };
+                resolve(result);
+            }else{
+                reject("All services are busy");
+            }
         });
     });
 };
@@ -294,9 +298,9 @@ app.post('/api/tries/createTry', (req, res) => {
                                 return res.send({ error: 'Server error' });
                             });
                         });
-                    }).catch(() => {
+                    }).catch((error) => {
                         res.statusCode = 500;
-                        return res.send({ error: 'Server error' });
+                        return res.send({ error: error ? error : 'Server error' });
                     });
 
                 }else if(labIsActive){
