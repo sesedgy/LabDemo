@@ -54,6 +54,8 @@ class LabsPage extends Component {
 
     allFlags = [];
 
+    isLoading = false;
+
     state = {
       userId: null,
       tries: [],
@@ -72,6 +74,7 @@ class LabsPage extends Component {
           this.allTries = results[0];
           this.allServices = results[1];
           this.allFlags = results[2];
+          this.isLoading = true;
 
           const tries = this.allTries.filter(item => item.userId === userId);
           const lastTry = tries[tries.length - 1];
@@ -207,7 +210,7 @@ class LabsPage extends Component {
       let now = moment();
       let finishTime = null;
       let finishTimeWithPause = null;
-      if (userId === selectedUserId) {
+      if (userId === selectedUserId && this.isLoading) {
         if (tries.length > 0) {
           lastTry = tries[tries.length - 1];
           now = moment();
