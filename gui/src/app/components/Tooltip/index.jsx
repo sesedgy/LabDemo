@@ -26,7 +26,7 @@ const Tooltip = ({
             {myResults.length > 0 ? (
               <>
                 {myResults.map(flag => (
-                  <div className="result">
+                  <div className="result" key={flag.tryId + flag.flagType}>
                     <span className="time">{flag.wasteTime}</span>
                     { flag.flagType === '1' && <RootLabel /> }
                   </div>
@@ -39,7 +39,7 @@ const Tooltip = ({
             {otherResults.length > 0 ? (
               <>
                 {otherResults.map(flag => (
-                  <div className="result" onClick={() => {onUserClick(flag.userId, flag.tryId)}}>
+                  <div className="result" onClick={() => { onUserClick(flag.userId, flag.tryId); }} key={flag.tryId + flag.flagType}>
                     <span className="username">{flag.userName}</span>
                     <span className="time">{flag.wasteTime}</span>
                     { flag.flagType === '1' && <RootLabel /> }

@@ -233,7 +233,7 @@ class LabsPage extends Component {
           <div className="services_container">
             <div className="row">
               {this.allServices.filter(service => service.level === 1).map(service => (
-                <Tooltip onUserClick={this.onUserClick} flagsList={service.flags} userId={userId}>
+                <Tooltip onUserClick={this.onUserClick} flagsList={service.flags} userId={userId} key={service.id}>
                   <div className="service" style={{ opacity: flags.filter(item => item.serviceName === service.name).length === 0 ? 0.5 : 1 }}>
                     <img className="image" src={ComputerImg} alt="" />
                     <img className="image-target" style={{ display: flags.filter(item => item.serviceName === service.name && item.flagStatus === 'solved').length > 0 ? 'block' : 'none' }} src={TargetImg} alt="" />
@@ -245,7 +245,7 @@ class LabsPage extends Component {
             </div>
             <div className="row">
               {this.allServices.filter(service => service.level === 2).map(service => (
-                <Tooltip onUserClick={this.onUserClick} flagsList={service.flags} userId={userId}>
+                <Tooltip onUserClick={this.onUserClick} flagsList={service.flags} userId={userId} key={service.id}>
                   <div className="service" style={{ opacity: flags.filter(item => item.serviceName === service.name).length === 0 ? 0.5 : 1 }}>
                     <img className="image" src={ComputerImg} alt="" />
                     <img className="image-target" style={{ display: flags.filter(item => item.serviceName === service.name && item.flagStatus === 'solved').length > 0 ? 'block' : 'none' }} src={TargetImg} alt="" />
@@ -257,7 +257,7 @@ class LabsPage extends Component {
             </div>
             <div className="row">
               {this.allServices.filter(service => service.level === 3).map(service => (
-                <Tooltip onUserClick={this.onUserClick} flagsList={service.flags} userId={userId}>
+                <Tooltip onUserClick={this.onUserClick} flagsList={service.flags} userId={userId} key={service.id}>
                   <div className="service" style={{ opacity: flags.filter(item => item.serviceName === service.name).length === 0 ? 0.5 : 1 }}>
                     <img className="image" src={ComputerImg} alt="" />
                     <img className="image-target" style={{ display: flags.filter(item => item.serviceName === service.name && item.flagStatus === 'solved').length > 0 ? 'block' : 'none' }} src={TargetImg} alt="" />
@@ -349,7 +349,7 @@ class LabsPage extends Component {
               </div>
               <div className="solutions-list">
                 {tries.map(item => (
-                  <div className="solution_container">
+                  <div className="solution_container" key={item._id}>
                     {selectedSolutionId === item._id && <img className="arrow-right" src={RightArrow} />}
                     <div className="solution" onClick={() => { this.selectSolution(item._id); }}>{item.tryName}</div>
                   </div>
