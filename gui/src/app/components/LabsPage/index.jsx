@@ -35,13 +35,18 @@ const styles = {
   },
   notchedOutline: {
     borderWidth: '1px',
-    borderColor: '#4fb3bf !important',
+    borderColor: '#ececec !important',
   },
   floatingLabelFocusStyle: {
-    color: '#4fb3bf',
+    color: '#ececec !important',
+  },
+  inputLabelShrink: {
+    color: '#ececec !important',
+  },
+  inputMultiline: {
+    color: '#ececec !important',
   },
   button: {
-
     margin: '10px',
     width: 'calc(100% - 20px)',
   },
@@ -321,10 +326,14 @@ class LabsPage extends Component {
                       InputProps={{
                         classes: {
                           notchedOutline: classes.notchedOutline,
+                            input: classes.inputMultiline,
                         },
                       }}
                       InputLabelProps={{
                         className: classes.floatingLabelFocusStyle,
+                        classes: {
+                          shrink: classes.inputLabelShrink,
+                        },
                       }}
                       className={classes.textField}
                       value={flag}

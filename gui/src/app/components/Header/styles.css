@@ -38,6 +38,7 @@
 .popover {
     padding: 10px;
     width: 240px;
+    background-color: #232d38;
 }
 
 .popover .link {

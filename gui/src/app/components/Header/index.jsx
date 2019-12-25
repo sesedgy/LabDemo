@@ -7,18 +7,20 @@ import Toolbar from '@material-ui/core/Toolbar/Toolbar';
 import Popover from '@material-ui/core/Popover';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import {createUser} from '../../services/apiService';
+import { createUser } from '../../services/apiService';
 
 import LogoImg from '../../../images/logo.svg';
 
 import './styles.css';
 
 
-
 const styles = {
   grow: {
     flexGrow: 1,
     textAlign: 'left',
+  },
+  popover: {
+    borderRadius: '0',
   },
   textField: {
     display: 'block',
@@ -29,6 +31,24 @@ const styles = {
     margin: '10px',
     width: 'calc(100% - 20px)',
   },
+  underline: {
+    '&:before': {
+      borderColor: '#ececec !important',
+    },
+    '&:after': {
+      borderColor: '#ececec !important',
+    },
+  },
+  floatingLabelFocusStyle: {
+    color: '#ececec !important',
+  },
+  inputLabelShrink: {
+    color: '#ececec !important',
+  },
+  inputMultiline: {
+    color: '#ececec !important',
+  },
+
 };
 
 // onClick={() => { signOut(); }}
@@ -106,6 +126,7 @@ class Header extends React.Component {
             id={id}
             open={open}
             anchorEl={anchorEl}
+            classes={{ paper: classes.popover }}
             onClose={() => {
               this.setState({ anchorEl: null });
             }}
@@ -130,9 +151,41 @@ class Header extends React.Component {
                     className={classes.textField}
                     value={name}
                     fullWidth
+                    InputProps={{
+                      classes: {
+                        notchedOutline: classes.notchedOutline,
+                        input: classes.inputMultiline,
+                        underline: classes.underline,
+                      },
+                    }}
+                    InputLabelProps={{
+                      className: classes.floatingLabelFocusStyle,
+                      classes: {
+                        shrink: classes.inputLabelShrink,
+                      },
+                    }}
                     onChange={(e) => { this.setState({ name: e.target.value }); }}
                   />
-                  <TextField label="Password" className={classes.textField} value={password} fullWidth onChange={(e) => { this.setState({ password: e.target.value }); }} />
+                  <TextField
+                    label="Password"
+                    InputProps={{
+                      classes: {
+                        notchedOutline: classes.notchedOutline,
+                        input: classes.inputMultiline,
+                        underline: classes.underline,
+                      },
+                    }}
+                    InputLabelProps={{
+                      className: classes.floatingLabelFocusStyle,
+                      classes: {
+                        shrink: classes.inputLabelShrink,
+                      },
+                    }}
+                    className={classes.textField}
+                    value={password}
+                    fullWidth
+                    onChange={(e) => { this.setState({ password: e.target.value }); }}
+                  />
                   <Button variant="contained" color="primary" className={classes.button} onClick={() => { logIn(name, password); this.setState({ anchorEl: null }); }}>
                         LogIn
                   </Button>
@@ -147,11 +200,63 @@ class Header extends React.Component {
                     label="Name"
                     className={classes.textField}
                     value={registrationName}
+                    InputProps={{
+                      classes: {
+                        notchedOutline: classes.notchedOutline,
+                        input: classes.inputMultiline,
+                        underline: classes.underline,
+                      },
+                    }}
+                    InputLabelProps={{
+                      className: classes.floatingLabelFocusStyle,
+                      classes: {
+                        shrink: classes.inputLabelShrink,
+                      },
+                    }}
+
                     fullWidth
                     onChange={(e) => { this.setState({ registrationName: e.target.value }); }}
                   />
-                  <TextField label="Password" className={classes.textField} value={registrationPassword} fullWidth onChange={(e) => { this.setState({ registrationPassword: e.target.value }); }} />
-                  <TextField label="Invite code" className={classes.textField} value={inviteId} fullWidth onChange={(e) => { this.setState({ inviteId: e.target.value }); }} />
+                  <TextField
+                    label="Password"
+                    InputProps={{
+                      classes: {
+                        notchedOutline: classes.notchedOutline,
+                        input: classes.inputMultiline,
+                        underline: classes.underline,
+                      },
+                    }}
+                    InputLabelProps={{
+                      className: classes.floatingLabelFocusStyle,
+                      classes: {
+                        shrink: classes.inputLabelShrink,
+                      },
+                    }}
+                    className={classes.textField}
+                    value={registrationPassword}
+                    fullWidth
+                    onChange={(e) => { this.setState({ registrationPassword: e.target.value }); }}
+                  />
+                  <TextField
+                    label="Invite code"
+                    InputProps={{
+                      classes: {
+                        notchedOutline: classes.notchedOutline,
+                        input: classes.inputMultiline,
+                        underline: classes.underline,
+                      },
+                    }}
+                    InputLabelProps={{
+                      className: classes.floatingLabelFocusStyle,
+                      classes: {
+                        shrink: classes.inputLabelShrink,
+                      },
+                    }}
+                    className={classes.textField}
+                    value={inviteId}
+                    fullWidth
+                    onChange={(e) => { this.setState({ inviteId: e.target.value }); }}
+                  />
                   <Button variant="contained" color="primary" className={classes.button} onClick={() => { createUser(registrationName, registrationPassword, inviteId); this.setState({ anchorEl: null }); }}>
                         Create account
                   </Button>

@@ -29,7 +29,6 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    border-radius: 10px;
     position: relative;
 }
 
@@ -80,6 +79,7 @@
 }
 
 .right-bar .solutions_container {
+    overflow: auto;
     margin-top: 25px;
 }
 
