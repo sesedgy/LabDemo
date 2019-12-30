@@ -16,6 +16,8 @@
 .header .logo_container .image {
     width: 56px;
     cursor: pointer;
+    position: absolute;
+    top: 7px;
 }
 
 .header .my-statistic-label{
@@ -29,6 +31,18 @@
 .login_container .link {
     cursor: pointer;
     font-weight: bold;
+}
+
+.login_container .link.active{
+    opacity: 0.5;
+}
+
+.account-btn{
+    margin-right: 10px;
+}
+
+.account-btn.active{
+    opacity: 0.5;
 }
 
 .login_container .link.login-link {

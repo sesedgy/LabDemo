@@ -9,7 +9,7 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { createUser } from '../../services/apiService';
 
-import LogoImg from '../../../images/logo.svg';
+import LogoImg from '../../../images/Logo.png';
 
 import './styles.css';
 
@@ -21,6 +21,9 @@ const styles = {
   },
   popover: {
     borderRadius: '0',
+    color: '#ececec',
+    position: 'absolute',
+    top: '60px !important',
   },
   textField: {
     display: 'block',
@@ -30,6 +33,8 @@ const styles = {
   button: {
     margin: '10px',
     width: 'calc(100% - 20px)',
+    backgroundImage: 'linear-gradient( 69deg, rgb(37,52,67) 0%, rgb(37,52,67) 100%)',
+    color: '#ececec',
   },
   underline: {
     '&:before': {
@@ -55,7 +60,7 @@ const styles = {
 class Header extends React.Component {
     state = {
       anchorEl: null,
-      popupMode: 'logIn',
+      popupMode: null,
       name: '',
       password: '',
       registrationName: '',
@@ -93,6 +98,7 @@ class Header extends React.Component {
                     My Statistic
                 </span>
                 <IconButton
+                  className={popupMode === 'account' ? 'account-btn active' : 'account-btn'}
                   onClick={(event) => {
                     this.setState({ anchorEl: event.currentTarget, popupMode: 'account' });
                   }}
@@ -104,7 +110,7 @@ class Header extends React.Component {
               : (
                 <div className="login_container">
                   <span
-                    className="link login-link"
+                    className={popupMode === 'logIn' ? 'link login-link active' : 'link login-link'}
                     onClick={(event) => {
                       this.setState({ anchorEl: event.currentTarget, popupMode: 'logIn' });
                     }}
@@ -112,7 +118,7 @@ class Header extends React.Component {
                     LogIn
                   </span>
                   <span
-                    className="link registration-link"
+                    className={popupMode === 'registration' ? 'link registration-link active' : 'link registration-link'}
                     onClick={(event) => {
                       this.setState({ anchorEl: event.currentTarget, popupMode: 'registration' });
                     }}
@@ -128,7 +134,7 @@ class Header extends React.Component {
             anchorEl={anchorEl}
             classes={{ paper: classes.popover }}
             onClose={() => {
-              this.setState({ anchorEl: null });
+              this.setState({ anchorEl: null, popupMode: null });
             }}
             anchorOrigin={{
               vertical: 'bottom',

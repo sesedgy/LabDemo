@@ -49,6 +49,8 @@ const styles = {
   button: {
     margin: '10px',
     width: 'calc(100% - 20px)',
+    backgroundImage: 'linear-gradient( 69deg, rgb(37,52,67) 0%, rgb(37,52,67) 100%)',
+    color: '#ececec',
   },
 };
 
@@ -326,7 +328,7 @@ class LabsPage extends Component {
                       InputProps={{
                         classes: {
                           notchedOutline: classes.notchedOutline,
-                            input: classes.inputMultiline,
+                          input: classes.inputMultiline,
                         },
                       }}
                       InputLabelProps={{
