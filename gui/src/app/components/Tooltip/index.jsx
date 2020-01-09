@@ -11,7 +11,10 @@ const Tooltip = ({
   flagsList = [],
   onUserClick,
   userId,
+  openModal,
+
 }) => {
+  flagsList = flagsList.sort((a, b) => (a.wasteTime > b.wasteTime ? 1 : a.wasteTime === b.wasteTime ? 0 : -1));
   const myResults = flagsList.filter(flag => flag.userId === userId);
   const otherResults = flagsList.filter(flag => flag.userId !== userId);
 
@@ -25,7 +28,7 @@ const Tooltip = ({
             <div className="label">My results</div>
             {myResults.length > 0 ? (
               <>
-                {myResults.map(flag => (
+                {myResults.slice(0, 4).map(flag => (
                   <div className="result" key={flag.tryId + flag.flagType}>
                     <span className="time">{flag.wasteTime}</span>
                     { flag.flagType === '1' && <RootLabel /> }
@@ -33,13 +36,14 @@ const Tooltip = ({
                 ))}
               </>
             ) : <div>empty</div>}
+            {myResults.length > 5 && <div className="show-more" onClick={openModal}>Show more...</div>}
           </div>
           <div className="other-results">
             <div className="label">Other results</div>
             {otherResults.length > 0 ? (
               <>
-                {otherResults.map(flag => (
-                  <div className="result" onClick={() => { onUserClick(flag.userId, flag.tryId); }} key={flag.tryId + flag.flagType}>
+                {otherResults.slice(0, 4).map(flag => (
+                  <div className="result" onClick={() => { onUserClick(flag.userId, flag.tryId, flag.userName); }} key={flag.tryId + flag.flagType}>
                     <span className="username">{flag.userName}</span>
                     <span className="time">{flag.wasteTime}</span>
                     { flag.flagType === '1' && <RootLabel /> }
@@ -47,6 +51,7 @@ const Tooltip = ({
                 ))}
               </>
             ) : <div>empty</div>}
+            {otherResults.length > 5 && <div className="show-more" onClick={openModal}>Show more...</div>}
 
           </div>
         </div>

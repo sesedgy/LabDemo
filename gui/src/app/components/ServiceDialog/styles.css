@@ -1,0 +1,52 @@
+.service_dialog {
+    width: 300px;
+    padding: 20px;
+    height: 400px;
+    overflow: auto;
+    background-color: #232d38;
+    color: white;
+}
+
+.service_dialog .my-results {
+
+}
+
+.service_dialog .label {
+    padding-bottom: 4px;
+    border-bottom: 1px solid;
+    text-align: center;
+    margin-bottom: 6px;
+    cursor: default;
+}
+
+.service_dialog .result {
+    margin-bottom: 3px;
+    display: flex;
+    padding: 2px;
+    cursor: default;
+}
+
+.service_dialog .time {
+    margin-right: 10px;
+}
+
+.service_dialog .root-label {
+    margin-left: auto;
+    height: 10px;
+    line-height: 10px;
+}
+
+
+.service_dialog .other-results {
+    margin-top: 10px;
+}
+
+.service_dialog .other-results .result .username {
+    font-weight: bold;
+    text-decoration: underline;
+    margin-right: 10px;
+}
+
+.service_dialog .other-results .result {
+    cursor: pointer;
+}

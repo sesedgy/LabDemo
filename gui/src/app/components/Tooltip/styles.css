@@ -28,6 +28,12 @@
     margin-right: 10px;
 }
 
+.tooltip-content_container .show-more {
+    text-decoration: underline;
+    cursor: pointer;
+    text-align: center;
+}
+
 .tooltip-content_container .root-label {
     margin-left: auto;
     height: 10px;
@@ -41,6 +47,7 @@
 
 .tooltip-content_container .other-results .result .username {
     font-weight: bold;
+    text-decoration: underline;
     margin-right: 10px;
 }
 

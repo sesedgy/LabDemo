@@ -12,11 +12,11 @@ import { HOURS_FROM_LAST_LAB } from '../../../constants';
 
 import ComputerImg from '../../../images/computer.svg';
 import TargetImg from '../../../images/target.svg';
-import RightArrow from '../../../images/right-arrow.svg';
 import Tooltip from '../Tooltip';
 
 import './styles.css';
 import RootLabel from '../RootLabel';
+import ServiceDialog from '../ServiceDialog';
 
 
 const styles = {
@@ -70,6 +70,9 @@ class LabsPage extends Component {
       selectedUserId: null,
       flag: '',
       selectedSolutionId: null,
+      openModal: false,
+      selectedServiceFlags: null,
+      selectedUserName: null,
     };
 
     componentDidMount() {
@@ -125,6 +128,11 @@ class LabsPage extends Component {
         getTries().then((result) => {
           this.allTries = result;
           const tries = this.allTries.filter(item => item.userId === userId);
+          const lastTry = tries[tries.length - 1];
+          if (lastTry) {
+            this.selectSolution(lastTry._id);
+          }
+
           this.setState({
             tries,
             flags: [],
@@ -179,7 +187,7 @@ class LabsPage extends Component {
       });
     };
 
-    onUserClick = (userId, tryId) => {
+    onUserClick = (userId, tryId, userName) => {
       const tries = this.allTries.filter(item => item.userId === userId);
       this.selectSolution(tryId);
 
@@ -187,6 +195,20 @@ class LabsPage extends Component {
         selectedUserId: userId,
         tries,
         flag: '',
+        selectedUserName: userName,
+      });
+    };
+
+    openModal = (selectedServiceFlags) => {
+      this.setState({
+        openModal: true,
+        selectedServiceFlags,
+      });
+    };
+
+    closeModal = () => {
+      this.setState({
+        openModal: false,
       });
     };
 
@@ -206,7 +228,7 @@ class LabsPage extends Component {
 
     render() {
       const {
-        userId, tries, flags, selectedUserId, flag, selectedSolutionId,
+        userId, tries, flags, selectedUserId, flag, selectedSolutionId, openModal, selectedServiceFlags, selectedUserName,
       } = this.state;
       const { classes } = this.props;
 
@@ -243,8 +265,8 @@ class LabsPage extends Component {
           <div className="services_container">
             <div className="row">
               {this.allServices.filter(service => service.level === 1).map(service => (
-                <Tooltip onUserClick={this.onUserClick} flagsList={service.flags} userId={userId} key={service.id}>
-                  <div className="service" style={{ opacity: flags.filter(item => item.serviceName === service.name).length === 0 ? 0.5 : 1 }}>
+                <Tooltip onUserClick={this.onUserClick} flagsList={service.flags} userId={userId} key={service.id} openModal={() => this.openModal(service.flags)}>
+                  <div className="service" style={{ opacity: flags.filter(item => item.serviceName === service.name).length === 0 ? 0.5 : 1 }} onClick={() => this.openModal(service.flags)}>
                     <img className="image" src={ComputerImg} alt="" />
                     <img className="image-target" style={{ display: flags.filter(item => item.serviceName === service.name && item.flagStatus === 'solved').length > 0 ? 'block' : 'none' }} src={TargetImg} alt="" />
                     <div className="label">{service.name}</div>
@@ -255,8 +277,8 @@ class LabsPage extends Component {
             </div>
             <div className="row">
               {this.allServices.filter(service => service.level === 2).map(service => (
-                <Tooltip onUserClick={this.onUserClick} flagsList={service.flags} userId={userId} key={service.id}>
-                  <div className="service" style={{ opacity: flags.filter(item => item.serviceName === service.name).length === 0 ? 0.5 : 1 }}>
+                <Tooltip onUserClick={this.onUserClick} flagsList={service.flags} userId={userId} key={service.id} openModal={() => this.openModal(service.flags)}>
+                  <div className="service" style={{ opacity: flags.filter(item => item.serviceName === service.name).length === 0 ? 0.5 : 1 }} onClick={() => this.openModal(service.flags)}>
                     <img className="image" src={ComputerImg} alt="" />
                     <img className="image-target" style={{ display: flags.filter(item => item.serviceName === service.name && item.flagStatus === 'solved').length > 0 ? 'block' : 'none' }} src={TargetImg} alt="" />
                     <div className="label">{service.name}</div>
@@ -267,8 +289,8 @@ class LabsPage extends Component {
             </div>
             <div className="row">
               {this.allServices.filter(service => service.level === 3).map(service => (
-                <Tooltip onUserClick={this.onUserClick} flagsList={service.flags} userId={userId} key={service.id}>
-                  <div className="service" style={{ opacity: flags.filter(item => item.serviceName === service.name).length === 0 ? 0.5 : 1 }}>
+                <Tooltip onUserClick={this.onUserClick} flagsList={service.flags} userId={userId} key={service.id} openModal={() => this.openModal(service.flags)}>
+                  <div className="service" style={{ opacity: flags.filter(item => item.serviceName === service.name).length === 0 ? 0.5 : 1 }} onClick={() => this.openModal(service.flags)}>
                     <img className="image" src={ComputerImg} alt="" />
                     <img className="image-target" style={{ display: flags.filter(item => item.serviceName === service.name && item.flagStatus === 'solved').length > 0 ? 'block' : 'none' }} src={TargetImg} alt="" />
                     <div className="label">{service.name}</div>
@@ -359,18 +381,28 @@ class LabsPage extends Component {
               )}
             <div className="solutions_container">
               <div className="user">
-                {tries.length > 0 && <>{selectedUserId === userId ? 'Your solutions' : ''}</>}
+                {tries.length > 0 && <>{selectedUserId === userId ? 'Your solutions' : `${selectedUserName}'s solutions`}</>}
               </div>
-              <div className="solutions-list">
+              <div className={selectedUserId === userId ? 'solutions-list' : 'solutions-list others'}>
                 {tries.map(item => (
                   <div className="solution_container" key={item._id}>
-                    {selectedSolutionId === item._id && <img className="arrow-right" src={RightArrow} />}
-                    <div className="solution" onClick={() => { this.selectSolution(item._id); }}>{item.tryName}</div>
+                    <div className={selectedSolutionId === item._id ? 'solution selected' : 'solution'} onClick={() => { this.selectSolution(item._id); }}>{item.tryName}</div>
                   </div>
                 ))}
               </div>
             </div>
           </div>
+          {openModal
+            && (
+            <ServiceDialog
+              open={openModal}
+              flagsList={selectedServiceFlags}
+              onClose={this.closeModal}
+              userId={userId}
+              onUserClick={this.onUserClick}
+            />
+            )
+            }
         </div>
       );
     }

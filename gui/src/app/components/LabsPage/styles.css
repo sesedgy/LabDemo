@@ -54,7 +54,7 @@
 .right-bar {
     width: calc(25% - 15px);
     background-color: #163142;
-    margin: 40px 15px 25px 0;
+    margin: 40px 15px 20px 0;
     padding: 25px;
 }
 
@@ -79,7 +79,6 @@
 }
 
 .right-bar .solutions_container {
-    overflow: auto;
     margin-top: 25px;
 }
 
@@ -91,7 +90,13 @@
 .right-bar .solutions_container .solutions-list {
     margin-top: 20px;
     font-size: 18px;
-
+    height: calc(100vh - 497px);
+    min-height: 225px;
+    overflow: auto;
+}
+.right-bar .solutions_container .solutions-list.others {
+    height: calc(100vh - 243px);
+    min-height: 540px;
 }
 
 .right-bar .solutions_container .solutions-list .solution_container {
@@ -110,7 +115,10 @@
     padding: 10px 10px;
     cursor: pointer;
     background-color: #182B38;
-    margin-bottom: 10px;
-    width: 90%;
-    margin-left: auto;
+    margin: 0 15px 10px 0;
+    box-shadow: 0px 1px 5px 0px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 3px 1px -2px rgba(0,0,0,0.12);
+}
+
+.right-bar .solutions_container .solutions-list .solution_container .solution.selected {
+    background-image: linear-gradient( 169deg, #582BA4 0%, #3175C4 100%);
 }
