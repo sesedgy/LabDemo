@@ -12,6 +12,7 @@ import { HOURS_FROM_LAST_LAB } from '../../../constants';
 
 import ComputerImg from '../../../images/computer.svg';
 import TargetImg from '../../../images/target.svg';
+import ArrowImg from '../../../images/arrow.svg';
 import Tooltip from '../Tooltip';
 
 import './styles.css';
@@ -276,11 +277,19 @@ class LabsPage extends Component {
               ))}
             </div>
             <div className="row">
-              {this.allServices.filter(service => service.level === 2).map(service => (
+              {this.allServices.filter(service => service.level === 2).map((service, index) => (
                 <Tooltip onUserClick={this.onUserClick} flagsList={service.flags} userId={userId} key={service.id} openModal={() => this.openModal(service.flags)}>
                   <div className="service" style={{ opacity: flags.filter(item => item.serviceName === service.name).length === 0 ? 0.5 : 1 }} onClick={() => this.openModal(service.flags)}>
                     <img className="image" src={ComputerImg} alt="" />
-                    <img className="image-target" style={{ display: flags.filter(item => item.serviceName === service.name && item.flagStatus === 'solved').length > 0 ? 'block' : 'none' }} src={TargetImg} alt="" />
+                      <img
+                          className="arrow"
+                          src={ArrowImg}
+                          alt=""
+                          style={{
+                              top: '-78px', transform: 'rotate(90deg)', left: index === 0 ? '84px' : '-4px', opacity: flags.filter(item => item.serviceName === service.name).length === 0 ? 0 : 1,
+                          }}
+                      />
+                      <img className="image-target" style={{ display: flags.filter(item => item.serviceName === service.name && item.flagStatus === 'solved').length > 0 ? 'block' : 'none' }} src={TargetImg} alt="" />
                     <div className="label">{service.name}</div>
                     {flags.some(item => item.serviceName === service.name && item.flagType === '1' && item.flagStatus === 'solved') && <RootLabel />}
                   </div>
@@ -288,10 +297,30 @@ class LabsPage extends Component {
               ))}
             </div>
             <div className="row">
-              {this.allServices.filter(service => service.level === 3).map(service => (
+              {this.allServices.filter(service => service.level === 3).map((service, index) => (
                 <Tooltip onUserClick={this.onUserClick} flagsList={service.flags} userId={userId} key={service.id} openModal={() => this.openModal(service.flags)}>
                   <div className="service" style={{ opacity: flags.filter(item => item.serviceName === service.name).length === 0 ? 0.5 : 1 }} onClick={() => this.openModal(service.flags)}>
                     <img className="image" src={ComputerImg} alt="" />
+                    {flags.filter(item => item.serviceName === this.allServices.filter(service => service.level === 2)[0].name).length !== 0 && (
+                    <img
+                      className="arrow"
+                      src={ArrowImg}
+                      alt=""
+                      style={{
+                        top: '-78px', transform: index === 0 ? 'rotate(90deg)' : index === 1 ? 'rotate(90deg)' : 'rotate(38deg)', left: index === 0 ? '84px' : index === 1 ? '-4px' : '-82px', opacity: flags.filter(item => item.serviceName === service.name).length === 0 ? 0 : 1,
+                      }}
+                    />
+                    )}
+                    {flags.filter(item => item.serviceName === this.allServices.filter(service => service.level === 2)[1].name).length !== 0 && (
+                    <img
+                      className="arrow"
+                      src={ArrowImg}
+                      alt=""
+                      style={{
+                        top: '-78px', transform: index === 0 ? 'rotate(140deg)' : 'rotate(90deg)', left: index === 0 ? '162px' : index === 1 ? '84px' : '-4px', opacity: flags.filter(item => item.serviceName === service.name).length === 0 ? 0 : 1,
+                      }}
+                    />
+                    )}
                     <img className="image-target" style={{ display: flags.filter(item => item.serviceName === service.name && item.flagStatus === 'solved').length > 0 ? 'block' : 'none' }} src={TargetImg} alt="" />
                     <div className="label">{service.name}</div>
                     {flags.some(item => item.serviceName === service.name && item.flagType === '1' && item.flagStatus === 'solved') && <RootLabel />}
@@ -346,7 +375,7 @@ class LabsPage extends Component {
                   {labInProgress && (
                   <div className="flag_container">
                     <TextField
-                      label="Name"
+                      label="Flag"
                       InputProps={{
                         classes: {
                           notchedOutline: classes.notchedOutline,
@@ -384,9 +413,11 @@ class LabsPage extends Component {
                 {tries.length > 0 && <>{selectedUserId === userId ? 'Your solutions' : `${selectedUserName}'s solutions`}</>}
               </div>
               <div className={selectedUserId === userId ? 'solutions-list' : 'solutions-list others'}>
-                {tries.map(item => (
+                {tries.map((item, index) => (
                   <div className="solution_container" key={item._id}>
-                    <div className={selectedSolutionId === item._id ? 'solution selected' : 'solution'} onClick={() => { this.selectSolution(item._id); }}>{item.tryName}</div>
+                    <div className={selectedSolutionId === item._id ? 'solution selected' : 'solution'} onClick={() => { this.selectSolution(item._id); }}>
+                      {(selectedUserId === userId && labInProgress && ((index + 1) === tries.length)) ? 'Current solution' : item.tryName}
+                    </div>
                   </div>
                 ))}
               </div>

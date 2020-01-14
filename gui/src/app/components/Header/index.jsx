@@ -147,7 +147,7 @@ class Header extends React.Component {
           >
             <div className="popover">
               {
-                popupMode === 'account' && <div className="link" onClick={() => { logOut(); this.setState({ anchorEl: null }); }}>LogOut</div>
+                popupMode === 'account' && <div className="link" onClick={() => { logOut(); this.setState({ anchorEl: null, popupMode: null }); }}>LogOut</div>
             }
               {
                 popupMode === 'logIn' && (
@@ -156,6 +156,7 @@ class Header extends React.Component {
                     label="Name"
                     className={classes.textField}
                     value={name}
+
                     fullWidth
                     InputProps={{
                       classes: {
@@ -174,6 +175,7 @@ class Header extends React.Component {
                   />
                   <TextField
                     label="Password"
+                    type="password"
                     InputProps={{
                       classes: {
                         notchedOutline: classes.notchedOutline,
@@ -192,7 +194,16 @@ class Header extends React.Component {
                     fullWidth
                     onChange={(e) => { this.setState({ password: e.target.value }); }}
                   />
-                  <Button variant="contained" color="primary" className={classes.button} onClick={() => { logIn(name, password); this.setState({ anchorEl: null }); }}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    className={classes.button}
+                    onClick={() => {
+                      logIn(name, password); this.setState({
+                        anchorEl: null, popupMode: null, name: '', password: '',
+                      });
+                    }}
+                  >
                         LogIn
                   </Button>
 
@@ -225,6 +236,7 @@ class Header extends React.Component {
                   />
                   <TextField
                     label="Password"
+                    type="password"
                     InputProps={{
                       classes: {
                         notchedOutline: classes.notchedOutline,
@@ -263,7 +275,16 @@ class Header extends React.Component {
                     fullWidth
                     onChange={(e) => { this.setState({ inviteId: e.target.value }); }}
                   />
-                  <Button variant="contained" color="primary" className={classes.button} onClick={() => { createUser(registrationName, registrationPassword, inviteId); this.setState({ anchorEl: null }); }}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    className={classes.button}
+                    onClick={() => {
+                      createUser(registrationName, registrationPassword, inviteId); this.setState({
+                        anchorEl: null, popupMode: null, registrationName: '', registrationPassword: '', inviteId: '',
+                      });
+                    }}
+                  >
                         Create account
                   </Button>
                 </>

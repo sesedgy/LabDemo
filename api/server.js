@@ -126,30 +126,42 @@ app.post('/api/users', (req, res) => {
                 res.statusCode = 500;
                 return res.send({ error: 'Invite was used' });
             }
-            let user = new UserModel({
-                name: req.body.name,
-                password: HashService.getHash(req.body.password),
-                inviteId: invite._id,
-            });
-            InviteModel.update(
-                {_id: invite._id},
-                {$set: {'status': "used"}},
-                function (err) {
-                    if (!err){
-                        user.save(function (err) {
-                            if (!err) {
-                                return res.send({status: 'OK'});
-                            } else {
-                                res.statusCode = 500;
-                                res.send({error: 'Server error'});
-                            }
-                        });
-                    }else{
+            UserModel.findOne({ 'name': req.body.name }, (err, user) => {
+                if (!err) {
+                    if(user){
                         res.statusCode = 500;
-                        return res.send({ error: 'Server error' });
+                        res.send({error: 'Name was used'});
+                    }else {
+                        user = new UserModel({
+                            name: req.body.name,
+                            password: HashService.getHash(req.body.password),
+                            inviteId: invite._id,
+                        });
+                        InviteModel.update(
+                            {_id: invite._id},
+                            {$set: {'status': "used"}},
+                            function (err) {
+                                if (!err) {
+                                    user.save(function (err) {
+                                        if (!err) {
+                                            return res.send({status: 'OK'});
+                                        } else {
+                                            res.statusCode = 500;
+                                            res.send({error: 'Server error'});
+                                        }
+                                    });
+                                } else {
+                                    res.statusCode = 500;
+                                    return res.send({error: 'Server error'});
+                                }
+                            }
+                        );
                     }
+                } else {
+                    res.statusCode = 500;
+                    res.send({error: 'Server error'});
                 }
-            );
+            });
         } else {
             res.statusCode = 500;
             return res.send({ error: 'Server error' });
