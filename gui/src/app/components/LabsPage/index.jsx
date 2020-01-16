@@ -13,6 +13,9 @@ import { HOURS_FROM_LAST_LAB } from '../../../constants';
 import ComputerImg from '../../../images/computer.svg';
 import TargetImg from '../../../images/target.svg';
 import ArrowImg from '../../../images/arrow.svg';
+import WindowsImg from '../../../images/windows.svg';
+import LinuxImg from '../../../images/linux.svg';
+import CrownImg from '../../../images/crown.svg';
 import Tooltip from '../Tooltip';
 
 import './styles.css';
@@ -126,13 +129,36 @@ class LabsPage extends Component {
     createTry = () => {
       const { userId } = this.state;
       createTry().then(() => {
-        getTries().then((result) => {
-          this.allTries = result;
+        Promise.all([getTries(), getFlags()]).then((results) => {
+          this.allTries = results[0];
+          this.allFlags = results[1];
           const tries = this.allTries.filter(item => item.userId === userId);
           const lastTry = tries[tries.length - 1];
           if (lastTry) {
             this.selectSolution(lastTry._id);
           }
+
+          this.allServices = this.allServices.map(service => ({
+            ...service,
+            flags: this.allFlags
+              .filter(flag => flag.serviceName === service.name && flag.flagStatus === 'solved')
+              .map((flag) => {
+                const item = this.allTries.find(item => item._id === flag.tryId);
+                let submitTime = moment(flag.submitTime);
+                const startTime = moment(item.startTime);
+                submitTime = submitTime.subtract(startTime.hour(), 'hours');
+                submitTime = submitTime.subtract(startTime.minute(), 'minutes');
+                submitTime = submitTime.subtract(startTime.second(), 'seconds');
+
+                return {
+                  ...flag,
+                  wasteTime: submitTime.format('HH:mm:ss'),
+                  userName: item.userName,
+                  userId: item.userId,
+                };
+              }),
+          }));
+
 
           this.setState({
             tries,
@@ -267,9 +293,10 @@ class LabsPage extends Component {
             <div className="row">
               {this.allServices.filter(service => service.level === 1).map(service => (
                 <Tooltip onUserClick={this.onUserClick} flagsList={service.flags} userId={userId} key={service.id} openModal={() => this.openModal(service.flags)}>
-                  <div className="service" style={{ opacity: flags.filter(item => item.serviceName === service.name).length === 0 ? 0.5 : 1 }} onClick={() => this.openModal(service.flags)}>
+                  <div className="service" style={{ opacity: flags.filter(item => item.serviceName === service.name).length === 0 ? 0.4 : 1 }} onClick={() => this.openModal(service.flags)}>
                     <img className="image" src={ComputerImg} alt="" />
-                    <img className="image-target" style={{ display: flags.filter(item => item.serviceName === service.name && item.flagStatus === 'solved').length > 0 ? 'block' : 'none' }} src={TargetImg} alt="" />
+                    <img className="image-logo" src={WindowsImg} />
+                    <img className="image-target" style={{ display: flags.filter(item => item.serviceName === service.name && item.flagStatus === 'solved').length > 0 ? 'block' : 'none' }} src={CrownImg} alt="" />
                     <div className="label">{service.name}</div>
                     {flags.some(item => item.serviceName === service.name && item.flagType === '1' && item.flagStatus === 'solved') && <RootLabel />}
                   </div>
@@ -279,17 +306,18 @@ class LabsPage extends Component {
             <div className="row">
               {this.allServices.filter(service => service.level === 2).map((service, index) => (
                 <Tooltip onUserClick={this.onUserClick} flagsList={service.flags} userId={userId} key={service.id} openModal={() => this.openModal(service.flags)}>
-                  <div className="service" style={{ opacity: flags.filter(item => item.serviceName === service.name).length === 0 ? 0.5 : 1 }} onClick={() => this.openModal(service.flags)}>
+                  <div className="service" style={{ opacity: flags.filter(item => item.serviceName === service.name).length === 0 ? 0.4 : 1 }} onClick={() => this.openModal(service.flags)}>
                     <img className="image" src={ComputerImg} alt="" />
+                      <img className="image-logo" src={LinuxImg} />
                       <img
-                          className="arrow"
-                          src={ArrowImg}
-                          alt=""
-                          style={{
-                              top: '-78px', transform: 'rotate(90deg)', left: index === 0 ? '84px' : '-4px', opacity: flags.filter(item => item.serviceName === service.name).length === 0 ? 0 : 1,
-                          }}
-                      />
-                      <img className="image-target" style={{ display: flags.filter(item => item.serviceName === service.name && item.flagStatus === 'solved').length > 0 ? 'block' : 'none' }} src={TargetImg} alt="" />
+                      className="arrow"
+                      src={ArrowImg}
+                      alt=""
+                      style={{
+                        top: '-78px', transform: 'rotate(90deg)', left: index === 0 ? '84px' : '-4px', opacity: flags.filter(item => item.serviceName === service.name).length === 0 ? 0 : 1,
+                      }}
+                    />
+                    <img className="image-target" style={{ display: flags.filter(item => item.serviceName === service.name && item.flagStatus === 'solved').length > 0 ? 'block' : 'none' }} src={CrownImg} alt="" />
                     <div className="label">{service.name}</div>
                     {flags.some(item => item.serviceName === service.name && item.flagType === '1' && item.flagStatus === 'solved') && <RootLabel />}
                   </div>
@@ -299,9 +327,10 @@ class LabsPage extends Component {
             <div className="row">
               {this.allServices.filter(service => service.level === 3).map((service, index) => (
                 <Tooltip onUserClick={this.onUserClick} flagsList={service.flags} userId={userId} key={service.id} openModal={() => this.openModal(service.flags)}>
-                  <div className="service" style={{ opacity: flags.filter(item => item.serviceName === service.name).length === 0 ? 0.5 : 1 }} onClick={() => this.openModal(service.flags)}>
+                  <div className="service" style={{ opacity: flags.filter(item => item.serviceName === service.name).length === 0 ? 0.4 : 1 }} onClick={() => this.openModal(service.flags)}>
                     <img className="image" src={ComputerImg} alt="" />
-                    {flags.filter(item => item.serviceName === this.allServices.filter(service => service.level === 2)[0].name).length !== 0 && (
+                      <img className="image-logo" src={LinuxImg} />
+                      {flags.filter(item => item.serviceName === this.allServices.filter(service => service.level === 2)[0].name).length !== 0 && (
                     <img
                       className="arrow"
                       src={ArrowImg}
@@ -321,7 +350,7 @@ class LabsPage extends Component {
                       }}
                     />
                     )}
-                    <img className="image-target" style={{ display: flags.filter(item => item.serviceName === service.name && item.flagStatus === 'solved').length > 0 ? 'block' : 'none' }} src={TargetImg} alt="" />
+                    <img className="image-target" style={{ display: flags.filter(item => item.serviceName === service.name && item.flagStatus === 'solved').length > 0 ? 'block' : 'none' }} src={CrownImg} alt="" />
                     <div className="label">{service.name}</div>
                     {flags.some(item => item.serviceName === service.name && item.flagType === '1' && item.flagStatus === 'solved') && <RootLabel />}
                   </div>

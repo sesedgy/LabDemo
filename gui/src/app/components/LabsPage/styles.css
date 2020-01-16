@@ -37,13 +37,20 @@
     position: absolute;
 }
 .services_container .row .service .image {
-    width: 70px;
+    width: 85px;
+    margin-top: 16px;
+}
+
+.services_container .row .service .image-logo {
+    width: 38px;
+    position: absolute;
+    top: 44px;
 }
 
 .services_container .row .service .image-target {
     position: absolute;
-    width: 100px;
-    top: 4px;
+    width: 44px;
+    top: -5px;
 }
 .services_container .row .service .root-label {
     position: absolute;
