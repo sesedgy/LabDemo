@@ -161,8 +161,7 @@ class LabsPage extends Component {
 
 
           this.setState({
-            tries,
-            flags: [],
+            tries
           });
         });
       });
