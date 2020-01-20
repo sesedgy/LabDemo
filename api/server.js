@@ -347,12 +347,17 @@ app.post('/api/tries/createTry', (req, res) => {
 
 //Check flag
 app.post('/api/tries/checkFlag', (req, res) => {
-    FlagModel.findOneAndUpdate({ 'flagCode': req.body.flagCode }, {flagStatus: "solved", submitTime: new Date()}, (err) => {
-        if (!err){
-            return res.send({status: 'OK'});
-        }else{
+    FlagModel.findOneAndUpdate({ 'flagCode': req.body.flagCode }, {flagStatus: "solved", submitTime: new Date()}, (err, flag) => {
+        if (!err) {
+            if(flag) {
+                return res.send({status: 'OK'});
+            }else{
+                res.statusCode = 500;
+                return res.send({ error: 'Incorrect flag' });
+            }
+        } else {
             res.statusCode = 500;
-            return res.send({ error: 'Incorrect flag' });
+            return res.send({error: 'Server error'});
         }
     });
 });

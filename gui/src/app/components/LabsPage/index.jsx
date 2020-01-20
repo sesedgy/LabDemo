@@ -60,12 +60,11 @@ const styles = {
 
 class LabsPage extends Component {
     allTries = [];
-
     allServices = [];
-
     allFlags = [];
-
     isLoading = false;
+    timerIsComplete = false;
+    countDown = null;
 
     state = {
       userId: null,
@@ -265,25 +264,31 @@ class LabsPage extends Component {
       let now = moment();
       let finishTime = null;
       let finishTimeWithPause = null;
+      let nowWithSeconds = null;
       if (userId === selectedUserId && this.isLoading) {
         if (tries.length > 0) {
           lastTry = tries[tries.length - 1];
           now = moment();
+          nowWithSeconds = now.add(2, 'seconds');
           finishTime = moment(lastTry.finishTime);
           finishTimeWithPause = moment(lastTry.finishTime).add(HOURS_FROM_LAST_LAB, 'h');
           if (finishTime > now) {
             labInProgress = true;
           }
-          if (finishTime < now && finishTimeWithPause < now) {
+          if (finishTime < now && finishTimeWithPause <= nowWithSeconds) {
             labIsEnabled = true;
           }
-          if (finishTime < now && finishTimeWithPause >= now) {
+          if (finishTime < now && finishTimeWithPause > now) {
             labIsDisabled = true;
           }
         }
         if (!lastTry) {
           labIsEnabled = true;
         }
+      }
+      if(this.timerIsComplete){
+          this.countDown.start();
+          this.timerIsComplete = false
       }
 
       return (
@@ -364,7 +369,7 @@ class LabsPage extends Component {
                 <div className="timer_container">
                   {(labInProgress || labIsDisabled) && (
                   <div className="timer">
-                    <Countdown date={labInProgress ? finishTime : finishTimeWithPause} onComplete={() => { this.setState({ flag: '' }); }} />
+                    <Countdown ref={el => this.countDown = el} date={labInProgress ? finishTime : finishTimeWithPause} onComplete={() => { this.timerIsComplete = true; this.setState({ flag: '' }); }} />
                   </div>
                   )}
                   {(labIsEnabled || labIsDisabled)
