@@ -60,10 +60,15 @@ const styles = {
 
 class LabsPage extends Component {
     allTries = [];
+
     allServices = [];
+
     allFlags = [];
+
     isLoading = false;
+
     timerIsComplete = false;
+
     countDown = null;
 
     state = {
@@ -84,7 +89,7 @@ class LabsPage extends Component {
           getServices(),
           getFlags(),
         ]).then((results) => {
-          this.allTries = results[0];
+          this.allTries = results[0].sort((a, b) => (a.finishTime > b.finishTime ? 1 : a.finishTime < b.finishTime ? -1 : 0));
           this.allServices = results[1];
           this.allFlags = results[2];
           this.isLoading = true;
@@ -129,7 +134,7 @@ class LabsPage extends Component {
       const { userId } = this.state;
       createTry().then(() => {
         Promise.all([getTries(), getFlags()]).then((results) => {
-          this.allTries = results[0];
+          this.allTries = results[0].sort((a, b) => (a.finishTime > b.finishTime ? 1 : a.finishTime < b.finishTime ? -1 : 0));
           this.allFlags = results[1];
           const tries = this.allTries.filter(item => item.userId === userId);
           const lastTry = tries[tries.length - 1];
@@ -160,7 +165,7 @@ class LabsPage extends Component {
 
 
           this.setState({
-            tries
+            tries,
           });
         });
       });
@@ -265,6 +270,7 @@ class LabsPage extends Component {
       let finishTime = null;
       let finishTimeWithPause = null;
       let nowWithSeconds = null;
+      console.log(tries);
       if (userId === selectedUserId && this.isLoading) {
         if (tries.length > 0) {
           lastTry = tries[tries.length - 1];
@@ -286,9 +292,9 @@ class LabsPage extends Component {
           labIsEnabled = true;
         }
       }
-      if(this.timerIsComplete){
-          this.countDown.start();
-          this.timerIsComplete = false
+      if (this.timerIsComplete) {
+        this.countDown.start();
+        this.timerIsComplete = false;
       }
 
       return (
@@ -312,8 +318,8 @@ class LabsPage extends Component {
                 <Tooltip onUserClick={this.onUserClick} flagsList={service.flags} userId={userId} key={service.id} openModal={() => this.openModal(service.flags)}>
                   <div className="service" style={{ opacity: flags.filter(item => item.serviceName === service.name).length === 0 ? 0.4 : 1 }} onClick={() => this.openModal(service.flags)}>
                     <img className="image" src={ComputerImg} alt="" />
-                      <img className="image-logo" src={LinuxImg} />
-                      <img
+                    <img className="image-logo" src={LinuxImg} />
+                    <img
                       className="arrow"
                       src={ArrowImg}
                       alt=""
@@ -333,16 +339,16 @@ class LabsPage extends Component {
                 <Tooltip onUserClick={this.onUserClick} flagsList={service.flags} userId={userId} key={service.id} openModal={() => this.openModal(service.flags)}>
                   <div className="service" style={{ opacity: flags.filter(item => item.serviceName === service.name).length === 0 ? 0.4 : 1 }} onClick={() => this.openModal(service.flags)}>
                     <img className="image" src={ComputerImg} alt="" />
-                      <img className="image-logo" src={LinuxImg} />
-                      {flags.filter(item => item.serviceName === this.allServices.filter(service => service.level === 2)[0].name).length !== 0 && (
-                    <img
-                      className="arrow"
-                      src={ArrowImg}
-                      alt=""
-                      style={{
-                        top: '-78px', transform: index === 0 ? 'rotate(90deg)' : index === 1 ? 'rotate(90deg)' : 'rotate(38deg)', left: index === 0 ? '84px' : index === 1 ? '-4px' : '-82px', opacity: flags.filter(item => item.serviceName === service.name).length === 0 ? 0 : 1,
-                      }}
-                    />
+                    <img className="image-logo" src={LinuxImg} />
+                    {flags.filter(item => item.serviceName === this.allServices.filter(service => service.level === 2)[0].name).length !== 0 && (
+                      <img
+                        className="arrow"
+                        src={ArrowImg}
+                        alt=""
+                        style={{
+                          top: '-78px', transform: index === 0 ? 'rotate(90deg)' : index === 1 ? 'rotate(90deg)' : 'rotate(38deg)', left: index === 0 ? '84px' : index === 1 ? '-4px' : '-82px', opacity: flags.filter(item => item.serviceName === service.name).length === 0 ? 0 : 1,
+                        }}
+                      />
                     )}
                     {flags.filter(item => item.serviceName === this.allServices.filter(service => service.level === 2)[1].name).length !== 0 && (
                     <img
