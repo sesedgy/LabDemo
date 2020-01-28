@@ -1,6 +1,7 @@
 const config     = require('../../config/config');
 const md5 = require('md5');
 const UserModel  = require('../../config/db').UserModel;
+const crypto  = require('crypto');
 
 class HashService{
     constructor(){}
@@ -16,13 +17,7 @@ class HashService{
     }
 
     createGuidString() {
-        function s4() {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
-        }
-        return s4() + s4() + s4() + s4() +
-            s4() + s4() + s4() + s4();
+        return crypto.randomBytes(64).toString('hex');
     }
 
     getUserIdByToken(token) {
